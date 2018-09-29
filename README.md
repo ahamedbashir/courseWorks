@@ -1,4 +1,4 @@
-# imageProcessingHW
+# Image Processing
 
 ### HW 01   Status
 
@@ -9,3 +9,13 @@
 - [ ]  5.Histogram Stretch
 - [ ]  6.Histogram Match
 - [x]  7.Thresholding
+
+### HW 02 Status
+
+
+
+### HW 03 Status
+
+
+
+### Project Status
