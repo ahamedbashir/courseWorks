@@ -12,6 +12,8 @@
 void
 HW_gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2)
 {
+	IP_copyImageHeader(I1, I2);
+
 	int w = I1->width();
 	int h = I1->height();
 	int total = w*h;
@@ -24,7 +26,7 @@ HW_gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2)
 		// PixelOut = Constant * PixelInput^gamma
 		// here to make it linear gamma = 1/given gamma
 		// distribute i over MXGRAY
-		lut[i] = CLIP(pow( (double)i/MaxGray, expGamma ) * MaxGray, 0,MaxGray);
+		lut[i] = CLIP(int(pow((double)i/MaxGray, expGamma ) * MaxGray), 0,MaxGray);
 	
 	ChannelPtr<uchar> p1, p2, endPtr;
 	int type;
@@ -35,5 +37,4 @@ HW_gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2)
 		for(endPtr = p1 + total; endPtr > p1; )
 			*p2++ = lut[*p1++];
 	}
-
 }
