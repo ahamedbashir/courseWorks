@@ -19,7 +19,7 @@ HW_histoStretch(ImagePtr I1, int t1, int t2, ImagePtr I2)
 
 	int minMaxDiff = t2 - t1;
 	for(i = 0; i < MXGRAY; ++i)
-		lut[i] = CLIP( round((double)(i-t1)/minMaxDiff * MaxGray) ,0,MaxGray);
+		lut[i] = CLIP( floor((double)(i-t1)/minMaxDiff * MaxGray) ,0,MaxGray);
 
 	
 	ChannelPtr<uchar> p1, p2, endPtr;
