@@ -144,9 +144,18 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 		} while(l >= 0 && avgRefC[l] >= avgC[i]);
 	}
 	
-
+	//
+	// debug lut 
+	std:: cout << "lut values :\n";
+	for(int i : lut)
+		std::cout << i << " ";
 
 	// update the output image pixel using lut
-	
+		
+	for(int ch = 0; IP_getChannel(I1, ch, p1, type); ++ch) {
+		IP_getChannel(I2, ch, p2, type);
+		for(endPtr = p1 + total; p1 < endPtr; )
+			*p2++ = lut[*p1++];
+	}		
 
 }
