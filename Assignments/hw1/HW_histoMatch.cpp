@@ -31,6 +31,13 @@ HW_histoMatch(ImagePtr I1, ImagePtr targetHisto, bool approxAlg, ImagePtr I2)
 		int lut[targetW];
 
 
+		// evaluate remapping
+		
+
+
+		// visit all input pixel and update the output
+		/
+
 	}
 
 }
