@@ -14,6 +14,25 @@ HW_histoMatch(ImagePtr I1, ImagePtr targetHisto, bool approxAlg, ImagePtr I2)
 		return;
 	}
 
+	else {
+
+		IP_copyImageHeader(I1, I2);
+		int w = I1->width();
+		int h = I1->height();
+
+		int total = w * h;
+
+		// use IP_embedRange fto scale the range
+		IP_embedRange(I1, 0.0, (double)MaxGray, I2);
+
+		// initialize I2 dimension and buffer
+
+		int targetW = targetHiso->width();
+		int lut[targetW];
+
+
+	}
+
 }
 
 void
