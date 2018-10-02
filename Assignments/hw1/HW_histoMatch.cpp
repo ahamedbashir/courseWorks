@@ -132,9 +132,21 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 
 	// create look up table
 	
+	int lut[MXGRAY];
 
+	for (int i = 0; i < MXGRAY; ++i) {
+
+		int l = MaxGray;
+
+		do {
+			lut[i] = l;
+			l--;
+		} while(l >= 0 && avgRefC[l] >= avgC[i]);
+	}
+	
 
 
 	// update the output image pixel using lut
 	
+
 }
