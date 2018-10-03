@@ -17,7 +17,7 @@ HW_histoMatch(ImagePtr I1, ImagePtr targetHisto, bool approxAlg, ImagePtr I2)
 		return;
 	}
 
-/*	else {
+	else {
 		// extra credit
 
 		IP_copyImageHeader(I1, I2);
@@ -32,14 +32,14 @@ HW_histoMatch(ImagePtr I1, ImagePtr targetHisto, bool approxAlg, ImagePtr I2)
 		// initialize I2 dimension and buffer
 
 		int targetW = targetHisto->width();
-		int *lut = new int[targetW];
+		int lut[targetW];
 
 		int H1[MXGRAY], lim[MXGRAY], *H2,  R, typeLut  = 0, type = 0;
 		double minH, maxH;
 		int left[MXGRAY], right[MXGRAY], index[MXGRAY];
-		ChannelPtr<uchar> p, lutPtr, endPtr;
+		ChannelPtr<uchar> p1, lutPtr, endPtr;
 
-		for(int ch = 0; IP_getChannel(I2, ch, p, type); ++ch) {
+		for(int ch = 0; IP_getChannel(I2, ch, p1, type); ++ch) {
 			IP_getChannel(targetHisto, ch, lutPtr, typeLut);
 			H2 = (int *) &lutPtr[0];
 
@@ -56,9 +56,9 @@ HW_histoMatch(ImagePtr I1, ImagePtr targetHisto, bool approxAlg, ImagePtr I2)
 				for ( int i = 0; i < MXGRAY; ++i) {
 					H2[i] = round(H2[i] * scale);
 					sumH  += H2[i];
-					if ( sumH > totol) {
+					if ( sumH > total) {
 						H2[i] -= (sumH - total);
-					for(: i < MXGRAY; ++i)
+					for(; i < MXGRAY; ++i)
 						H2[i] = 0;
 					}
 				}
@@ -68,17 +68,51 @@ HW_histoMatch(ImagePtr I1, ImagePtr targetHisto, bool approxAlg, ImagePtr I2)
 			IP_histogram(I2, ch, H1, MXGRAY, minH, maxH);
 			R = 0;
 			sumH = 0;
-			for(int i = 0; 
+			for(int i = 0; i < MXGRAY; ++i) {
+				index[i] = R;
+				left[i] = R;
+				lim[i] = H2[R] - sumH;
+				sumH += H1[i];
 
-		// evaluate remapping
-		
+				while(sumH > H2[R] && R < MaxGray) {
+					sumH = sumH - H2[R];
+					R++;
+				}
+			right[i] = R;
+		}
+
+		// clear histo H1
+		for(int i = 0; i  < MXGRAY; ++i)
+			H1[i] = 0;	
 
 
 		// visit all input pixel and update the output
 		
-
+		IP_getChannel(I2, ch, p1, type);
+		for(endPtr = p1 + total; p1 < endPtr; p1++) {
+			int i = index[*p1];
+			if(left[*p1] == i) {
+				if( lim[*p1]-- <= 0) {
+					index[*p1] = MIN(i+1, MaxGray);
+					i = index[*p1];
+				}
+				*p1 = i;
+			}
+			else if (right[*p1] > i) {
+				if( H2[i] > H1[i])
+					*p1 = i;
+				else {
+					index[*p1] = MIN(i+1, MaxGray);
+					*p1 = index[*p1];
+				}
+			}
+				else
+					*p1 = i;
+				H1[i]++;
+			}
+		}
 	}
-*/
+
 }
 
 void
@@ -161,8 +195,7 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 		do {
 			lut[i] = l;
 			l--;
-		} while(l >= 0 && refCDF[l] > CDF[i]);
-		std::cout << l << "  and refC > C :" << (refCDF[l] > CDF[i]) << '\n';	
+		} while(l >= 0 && refCDF[l] >  CDF[i]);
 	}
 	
 	//
