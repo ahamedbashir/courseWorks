@@ -17,7 +17,9 @@ HW_histoStretch(ImagePtr I1, int t1, int t2, ImagePtr I2)
 
 	int i, lut[MXGRAY];
 
+	// get the max differce to distribute the values
 	int minMaxDiff = t2 - t1;
+	//  distribute the values over the range (0,255) inclusive
 	for(i = 0; i < MXGRAY; ++i)
 		lut[i] = CLIP( floor((double)(i-t1)/minMaxDiff * MaxGray) ,0,MaxGray);
 
