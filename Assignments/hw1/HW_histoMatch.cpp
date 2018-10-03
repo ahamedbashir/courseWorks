@@ -146,7 +146,7 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
   
 	// compute CDF of targetHisto
 	double refCDF[MXGRAY];
-	refCDF[0] = refH[0];
+	refCDF[0] = avgRefH[0];
 	for(int i = 1; i < MXGRAY; ++i)
 		refCDF[i] = refCDF[i-1] + avgRefH[i];
 
@@ -161,8 +161,8 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 		do {
 			lut[i] = l;
 			l--;
-		} while(l >= 0 && refC[l] > C[i]);
-		
+		} while(l >= 0 && refCDF[l] > CDF[i]);
+		std::cout << l << "  and refC > C :" << (refCDF[l] > CDF[i]) << '\n';	
 	}
 	
 	//
