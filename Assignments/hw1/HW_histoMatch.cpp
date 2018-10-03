@@ -86,7 +86,7 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 {
 	IP_copyImageHeader(I1, I2);
 
-	// computer normalize histogram of I1
+	// computer histogram of I1
 	int w = I1->width();
 	int h = I1->height();
 	
@@ -105,14 +105,8 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 			H[*p1++]++;
 		}
 	}
-/*
-	int totalP = 0;
-	for(int j = 0; j < MXGRAY; ++j) {
-		std::cout << "H[" << j << "] = " << H[j] << '\n';
-		totalP += H[j];
-	}
-*/
-	// normalize 
+
+	// normalize histogram of I1
 	double p = 0.0;
 	for(int i = 0; i < MXGRAY; ++i) {
 		avgH[i] = H[i] /(double)total; 
@@ -121,29 +115,22 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 	}
 	std::cout << " I1 total prabability = " << p << '\n';
 
-	// for debugging only
-//	std::cout << "\ntotal pixel  in I1 = "<<totalP << '\n';
-//	std::cout << "total dimension of I1 =  "  << total << '\n';
-
-	// compute the running sum avg  of normalized histogram
 	
-	double C[MXGRAY];
-	C[0] = avgH[0];
+	// compute  CDF of I1
+	double CDF[MXGRAY];
+	CDF[0] = avgH[0];
 
 	for(int i = 1; i < MXGRAY; ++i)
-		C[i] = C[i-1] + avgH[i];
+		CDF[i] = CDF[i-1] + avgH[i];
 
-	// compute running sum avg of targetHisto
+	// compute Histogram of targetHisto
 
 	int refH[MXGRAY]; 
 	double avgRefH[MXGRAY];
-
 	int refTotal = targetHisto->width() * targetHisto->height();
-
 
         for(int i = 0; i < MXGRAY; ++i)
                 refH[i] = 0;
-
 
         for( int ch = 0 ; IP_getChannel(targetHisto, ch, p2, type); ch++) {
                 for(int i = 0; i < MXGRAY; ++i){
@@ -151,35 +138,17 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 		}
         }
 
-	// normalize 
-        double sum = 0.0;
+	// normalize targetHisto
+        
 	for(int i = 0; i < MXGRAY; ++i){
                 avgRefH[i] = refH[i] /(double)refTotal; 
-	//	std::cout << avgRefH[i] << " ;
-//		sum += avgRefH[i];
-//		std::cout << sum << " ";
 	}
-	std::cout << " Target total prabability = " << sum << '\n';
-    
-        // for debugging only
-	/*
-	totalP = 0;
-        for ( int i = 0; i < MXGRAY; ++i){ 
-                std::cout << "refH["<<i << "]  = " << refH[i] << '\n';
-                totalP +=  refH[i];
-        }
-	
-        std::cout << "\ntotal pixle in target Image = "<<totalP << '\n';
-        std::cout << "dimension of target Image =  "  << refTotal << '\n';
-
-	std:: cout << refTotal << '\n';
-*/
-	// runing sum avg of targetHisto
-	
-	double refC[MXGRAY];
-	refC[0] = refH[0];
+  
+	// compute CDF of targetHisto
+	double refCDF[MXGRAY];
+	refCDF[0] = refH[0];
 	for(int i = 1; i < MXGRAY; ++i)
-		refC[i] = refC[i-1] + avgRefH[i];
+		refCDF[i] = refCDF[i-1] + avgRefH[i];
 
 
 	// create look up table
@@ -187,7 +156,6 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 	int lut[MXGRAY];
 
 	for (int i = 0; i < MXGRAY; ++i) {
-
 		int l = MaxGray;
 
 		do {
