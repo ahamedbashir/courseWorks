@@ -130,7 +130,7 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 	for(int i = 0; i < MXGRAY; ++i)
 		H[i] = 0;
 
-	ChannelPtr<uchar> p1, p2,p3, endPtr;
+	ChannelPtr<uchar> p1;
 	int type;
 	for( int ch = 0 ; IP_getChannel(I1, ch, p1, type); ch++) {
 		for(int i = 0; i < total; ++i)
@@ -150,19 +150,22 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 
 	int refH[MXGRAY]; 
 	double refCDF[MXGRAY];
-	int refTotal = targetHisto->width() * targetHisto->height();
 
         for(int i = 0; i < MXGRAY; ++i)
                 refH[i] = 0;
 
-        for( int ch = 0 ; IP_getChannel(targetHisto, ch, p2, type); ch++) {
-                for(int i = 0; i < refTotal; ++i){
-                        refH[*p2++]++;
+	// targetHisto has width MXGRAY
+	ChannelPtr<uchar> refPtr;
+        for( int ch = 0 ; IP_getChannel(targetHisto, ch, refPtr, type); ch++) {
+                for(int i = 0; i < MXGRAY; ++i){
+                        refH[*refPtr++]++;
 		}
         }
 
 	// normalize targetHisto
-        
+	int refTotal = 0;
+        for(int i : refH)
+		refTotal += i;
 	for(int i = 0; i < MXGRAY; ++i){
                 refCDF[i] = refH[i] /(double)refTotal; 
 	}
@@ -181,21 +184,21 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 		
 	int lut[MXGRAY];
 
-	for (int l1 = 0; l1 < MXGRAY; ++l1) {
-		int l2 = MaxGray;
+	for (int i = 0; i < MXGRAY; ++i) {
+		int j = MaxGray;
 
 		do {
-			lut[l1] = l2;
-			l2--;
-		} while(l1 >= 0 && refCDF[l2] >  CDF[l1]);
+			lut[i] = j;
+			j--;
+		} while(i >= 0 && CDF[i] <= refCDF[j]);
 	}
 
 	// update the output image pixel using lut
-		
-	for(int ch = 0; IP_getChannel(I1, ch, p1, type); ++ch) {
-		IP_getChannel(I2, ch, p2, type);
-		for(endPtr = p1 + total; p1 < endPtr; )
-			*p2++ = lut[*p1++];
+	ChannelPtr<uchar> I1Ptr, I2Ptr, endPtr;
+	for(int ch = 0; IP_getChannel(I1, ch, I1Ptr, type); ++ch) {
+		IP_getChannel(I2, ch, I2Ptr, type);
+		for(endPtr = I1Ptr + total; I1Ptr < endPtr; )
+			*I2Ptr++ = lut[*I1Ptr++];
 	}	
 
 }
