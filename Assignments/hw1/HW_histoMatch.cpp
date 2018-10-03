@@ -135,19 +135,12 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 	int type;
 	for( int ch = 0 ; IP_getChannel(I1, ch, p1, type); ch++) {
 		for(int i = 0; i < total; ++i)
-		{
 			H[*p1++]++;
-		}
 	}
 
 	// normalize histogram of I1
-	double p = 0.0;
-	for(int i = 0; i < MXGRAY; ++i) {
+	for(int i = 0; i < MXGRAY; ++i) 
 		avgH[i] = H[i] /(double)total; 
-		p += avgH[i];
-		std::cout << p << " ";
-	}
-	std::cout << " I1 total prabability = " << p << '\n';
 
 	
 	// compute  CDF of I1
@@ -180,13 +173,21 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
   
 	// compute CDF of targetHisto
 	double refCDF[MXGRAY];
+
+
+
 	refCDF[0] = avgRefH[0];
 	for(int i = 1; i < MXGRAY; ++i)
 		refCDF[i] = refCDF[i-1] + avgRefH[i];
 
 
 	// create look up table
+	//
+	// CDF debugging
+	for(int i = 0; i < MXGRAY; ++i) 
+		std::cout <<i << " :  Ref Cdf = \t"<<refCDF[i] << "\t I1 CDF = " << CDF[i] << '\n';
 	
+		
 	int lut[MXGRAY];
 
 	for (int i = 0; i < MXGRAY; ++i) {
@@ -194,16 +195,15 @@ histoMatchApprox(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2)
 
 		do {
 			lut[i] = l;
-			l--;
+			l -= 1;
 		} while(l >= 0 && refCDF[l] >  CDF[i]);
 	}
 	
-	//
-	// debug lut 
+	/*debug lut 
 	std:: cout << "lut values :\n";
 	for(int i : lut)
 		std::cout << i << " ";
-
+*/
 	// update the output image pixel using lut
 		
 	for(int ch = 0; IP_getChannel(I1, ch, p1, type); ++ch) {
