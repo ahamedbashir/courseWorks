@@ -56,9 +56,11 @@ HW_quantize(ImagePtr I1, int levels, bool dither, ImagePtr I2)
 			IP_getChannel(I2, ch, p2, type);
 			
 			for(int height = 0; height < h; ++height) {
+				// add noise on odd level and subtract noise on even level
 				addNoise = ( height %2) ? -1: 1;
 
 				for(int width = 0; width < w; ++width) {
+					// adding random noise per pixel, every pixel has different noise
 					withNoise = (*p1++) + ceil((double)rand()/RAND_MAX * bias * addNoise);
 					addNoise *= -1;
 

@@ -7,24 +7,30 @@ void histoMatchExactExtra(ImagePtr, ImagePtr, ImagePtr);
 //
 // Apply histogram matching to I1. Output is in I2.
 //
+//      Written by :    BASHIR AHAMED
+//                      SHOFIQUR RAHMAN
+//                      UCHA SAMADASHVILI
+//
+//      Semester   :    FALL 2018
+//
+//
+//
+//
+
 void
 HW_histoMatch(ImagePtr I1, ImagePtr targetHisto, bool approxAlg, ImagePtr I2)
 {
 	if(approxAlg) {
 		// this is required
-
 		histoMatchApprox(I1, targetHisto, I2);
 		return;
 	}
 
 	else {
 		// extra credit
-	
 		histoMatchExactExtra(I1, targetHisto, I2);
 		return;
 	}
-
-
 }
 
 void
