@@ -130,9 +130,6 @@ void histoMatchExactExtra(ImagePtr I1, ImagePtr targetHisto, ImagePtr I2){
 
         // initialize I2 dimension and buffer
 
-        int targetW = targetHisto->width();
-        int lut[targetW];
-
         int H1[MXGRAY], lim[MXGRAY], *H2;
 	int R, typeLut  = 0, type = 0;
         double minH, maxH;
