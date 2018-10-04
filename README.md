@@ -7,7 +7,7 @@
 - [x]  3. Gamma Correction
 - [x]  4. Contrast Enhancement
 - [x]  5. Histogram Stretch
-- [ ]  6. Histogram Match
+- [x]  6. Histogram Match
 - [x]  7. Thresholding
 
 ### HW 02 Status
