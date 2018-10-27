@@ -28,7 +28,7 @@
 void gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2);
 
 // function to copy row pixels into a buffered array
-void bufferedCopy(ChannelPtr<uchar> P, short* buf, int width, int kernelSize);
+void bufferedCopy(ChannelPtr<uchar> P, short* buf, int kernelSize, int width);
 
 void
 HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr I2)
@@ -54,6 +54,43 @@ HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr
     // Floyd-Steinberg method
 
     if ( method == 0) {
+    	short* input1;
+    	short* input2;
+
+    	short err;
+
+    	int bufSize  = w + 2;
+
+    	// top row buffer
+    	short* buf0 = new short[bufSize];
+    	// bottom row buffer
+    	short* buf1 = new short[bufSize];
+
+    	for(int ch = 0; IP_getChannel(I1_temp, ch, p1, type); ch++) {
+    		IP_getChannel(I2, ch, p2, type);
+
+    		// copy 1st row to buffer
+    		bufferedCopy(p1, buf0, kernelSize, w);
+
+    		p1 += w;
+
+    		// iterate over all the rows y from 2nd row ( y =1 )
+    		for(int  y = 1; y < h; y++) {
+    			// with serpentine scan
+
+    			if(serpentine) {
+
+
+
+    			}
+
+    			// with raster scan
+    			else {
+
+
+    			}
+    		}
+    	}
 
     }
 
@@ -61,12 +98,63 @@ HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr
     // Jarvis-Judice-Ninke method
 
     else if (method == 1) {
-    	
+
+    	int err;
+    	int bufSize  = w + 4;
+    	kernelSize = 5;
+
+    	short** input = new short*[3];
+    	short** buf = new short*[3];
+    	for(int i = 0; i < 3; i++)
+    		buf[i] = new short[bufSize];
+
+    	for(int ch = 0; IP_getChannel(I1_temp, ch, p1, type); ch++) {
+    		IP_getChannel(I2, ch, p2, type);
+
+    		// copy top two rows into the buffered array
+    		bufferedCopy(p1, buf[0], kernelSize, w);
+    		bufferedCopy(p1, buf[1], kernelSize, w);
+    		p1 += w;
+
+    		// iterate over all the remaining rows
+    		for(int y = 2; y < h; y++) {
+    			if (y % 3 == 0)
+    				bufferedCopy(p1, buf[0], kernelSize, w);
+                else if (y % 3 == 1)
+                	bufferedCopy(p1, buf[1], kernelSize, w);
+                else if (y % 3 == 2)
+                	bufferedCopy(p1, buf[2], kernelSize, w);
+                
+                p1 = p1 + w;
+
+                // with serpentine scan
+                if(serpentine) {
+
+                }
+
+                // with raster scan
+                else {
+
+                }
+
+    		}
+    	}
+    }
+    // without serpentine or raster scan
+    else {
+    	for(int ch = 0; IP_getChannel(I1_temp, ch, p1, type); ch++) {
+            IP_getChannel(I2, ch, p2, type);
+            
+            for(endPtr = p1 + total; p1 < endPtr; )
+            	*p2++ = *p1++;
+        }
     }
 }
 
 
-void bufferedCopy(ChannelPtr<uchar> P, short* buf, int width, int kernelSize) {
+// function to copy a row pixels into a buffered array
+
+void bufferedCopy(ChannelPtr<uchar> P, short* buf, int kernelSize, int width) {
 	int i = 0, bufSize = kernelSize + width - 1;
 	// copying the row pixels
 	for( ; i < kernelSize / 2; i++)
