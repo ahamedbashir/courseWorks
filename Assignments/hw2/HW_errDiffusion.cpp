@@ -23,7 +23,12 @@
 // Apply gamma correction to I1 prior to error diffusion.
 // Output is saved in I2.
 //
-vvoid gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2);
+
+// function for gamma correction
+void gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2);
+
+// function to copy row pixels into a buffered array
+void bufferedCopy(ChannelPtr<uchar> P, short* buf, int width, int kernelSize);
 
 void
 HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr I2)
@@ -46,18 +51,30 @@ HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr
     // threshold is
     int th = MXGRAY/2;
 
-    // Floyd Steinberg method
+    // Floyd-Steinberg method
 
     if ( method == 0) {
 
     }
 
 
-    // Jarvis Judice Ninke method
+    // Jarvis-Judice-Ninke method
 
     else if (method == 1) {
     	
     }
+}
+
+
+void bufferedCopy(ChannelPtr<uchar> P, short* buf, int width, int kernelSize) {
+	int i = 0, bufSize = kernelSize + width - 1;
+	// copying the row pixels
+	for( ; i < kernelSize / 2; i++)
+		buf[i] = *P;
+	for( ; i < kernelSize/2+w -1; i++)
+		buf[i] = *P++;
+	for( ; i < bufSize; i ++)
+		buf[i] = *P;
 }
 
 
