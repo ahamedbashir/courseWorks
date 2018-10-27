@@ -144,7 +144,6 @@ HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr
     else {
     	for(int ch = 0; IP_getChannel(I1_temp, ch, p1, type); ch++) {
             IP_getChannel(I2, ch, p2, type);
-            
             for(endPtr = p1 + total; p1 < endPtr; )
             	*p2++ = *p1++;
         }
