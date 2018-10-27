@@ -11,9 +11,11 @@
 - [x]  7. Thresholding
 
 ### HW 02 Status
-
-NA
-
+- []  1. Error Diffusion
+- []  2. Blurring
+- []  3. Sharpening
+- []  4. Median Filtering
+- []  5. Convolution
 
 ### HW 03 Status
 
