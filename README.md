@@ -11,7 +11,7 @@
 - [x]  7. Thresholding
 
 ### HW 02 Status
-- [ ]  1. Error Diffusion
+- [x]  1. Error Diffusion ** error with serpentine**
 - [ ]  2. Blurring
 - [ ]  3. Sharpening
 - [ ]  4. Median Filtering
