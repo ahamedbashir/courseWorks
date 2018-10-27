@@ -42,7 +42,7 @@ HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr
 
 	int w = I1->width();
     int h = I1->height();
-
+    int total = w*h;
     int type;
     ChannelPtr<uchar> p1, p2, endPtr;
 
@@ -77,20 +77,88 @@ HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr
     		// iterate over all the rows y from 2nd row ( y =1 )
     		for(int  y = 1; y < h; y++) {
     			// with serpentine scan
-
     			if(serpentine) {
+    				// even row, move from right to left
+    				if(y % 2 == 0) {
+    					bufferedCopy(p1, buf0, kernelSize, w);
+    					p1 = p1 + w;
+    					p2 = p2 + w -1;
 
+    					input1 = buf1 + w + 1;
+    					input2 = buf0 + w + 1;
 
+    					for(int x  = 0; x < w; x ++) {
+    						*p2 = (*input1 < th)? 0: MaxGray;
+    						err = *input1 - *p2;
+    						*(input1 - 1) += ( err * 7/16.0);
+    						*(input2 + 1) += ( err * 3/16.0);
+    						*(input2 )    += ( err * 5/16.0);
+    						*(input2 - 1) += ( err * 1/16.0);
 
+    						input1--;
+    						input2--;
+    						p2--;
+    					}
+    					p2 = p2 + w +1;
+    				}
+    				// odd row move from left to right
+    				else {
+    					bufferedCopy(p1, buf1, kernelSize, w);
+    					p1 = p1 + w;
+
+    					input1 = buf1 + 1;
+    					input2 = buf0 + 1;
+
+    					for(int x  = 0; x < w; x ++) {
+    						*p2 = (*input1 < th)? 0: MaxGray;
+    						err = *input1 - *p2;
+    						*(input1 + 1) += ( err * 7/16.0);
+    						*(input2 - 1) += ( err * 3/16.0);
+    						*(input2 )    += ( err * 5/16.0);
+    						*(input2 + 1) += ( err * 1/16.0);
+
+    						input1++;
+    						input2++;
+    						p2++;
+    					}
+
+    				}
     			}
 
     			// with raster scan
     			else {
+    				if( y %2 == 0) {
+    					bufferedCopy(p1, buf0, kernelSize, w);
+    					input1 = buf1 + 1;
+    					input2 = buf0 + 1;
+    				}
 
+    				else {
+    					bufferedCopy(p1, buf1, kernelSize, w);
+    					input1 = buf0 + 1;
+    					input2 = buf1 + 1;
+    				}
+    				p1 += w;
+
+    				for(int x  = 0; x < w; x ++) {
+    						*p2 = (*input1 < th)? 0: MaxGray;
+    						err = *input1 - *p2;
+    						*(input1 + 1) += ( err * 7/16.0);
+    						*(input2 - 1) += ( err * 3/16.0);
+    						*(input2 )    += ( err * 5/16.0);
+    						*(input2 + 1) += ( err * 1/16.0);
+
+    						input1++;
+    						input2++;
+    						p2++;
+    					}
 
     			}
     		}
     	}
+
+    	delete[] buf0;
+    	delete[] buf1;
 
     }
 
@@ -129,16 +197,138 @@ HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr
 
                 // with serpentine scan
                 if(serpentine) {
+                	// even rows, scan from right to left
+                	if (y % 2 == 0) {
+                        if (y % 3 == 0) {
+                            input[0] = buf[1] + w + 2;
+                            input[1] = buf[2] + w + 2;
+                            input[2] = buf[0] + w + 2;
 
+                        } else if (y % 3 == 1) {
+                            input[0] = buf[2] + w + 2;
+                            input[1] = buf[0] + w + 2;
+                            input[2] = buf[1] + w + 2;
+
+                        } else {
+                            input[0] = buf[0] + w + 2;
+                            input[1] = buf[1] + w + 2;
+                            input[2] = buf[2] + w + 2;
+
+                        }
+
+                        p2 = p2 + w - 1;
+                        for (int x = 0; x < w; x++) {
+                            *p2 = (*input[0] < th)? 0 : 255;
+                            err = *input[0] - *p2;
+
+                            *(input[0]-1) += (err * 7/48);
+                            *(input[0]-2) += (err * 5/48);
+                            *(input[1]  ) += (err * 7/48);
+                            *(input[1]+1) += (err * 5/48);
+                            *(input[1]+2) += (err * 3/48);
+                            *(input[1]-1) += (err * 5/48);
+                            *(input[1]-2) += (err * 3/48);
+                            *(input[2]  ) += (err * 5/48);
+                            *(input[2]+1) += (err * 3/48);
+                            *(input[2]+2) += (err * 1/48);
+                            *(input[2]-1) += (err * 3/48);
+                            *(input[2]-2) += (err * 1/48);
+                            
+                            input[0]--;
+                            input[1]--;
+                            input[2]--;
+                            p2--;
+                        }
+                        p2 = p2 + w + 1;
+                    }
+
+                    // odd rows, scan from left to right
+                    else {
+                        if (y % 3 == 0) {
+                            input[0] = buf[1] + 2;
+                            input[1] = buf[2] + 2;
+                            input[2] = buf[0] + 2;
+
+                        } else if(y % 3 == 1) {
+                            input[0] = buf[2] + 2;
+                            input[1] = buf[0] + 2;
+                            input[2] = buf[1] + 2;
+
+                        } else {
+                            input[0] = buf[0] + 2;
+                            input[1] = buf[1] + 2;
+                            input[2] = buf[2] + 2;
+
+                        }
+                        for (int x = 0; x < w; x++) {
+                            *p2 = (*input[0] < th)? 0 : 255;
+                            err = *input[0] - *p2;
+
+                            *(input[0]+1) += (err * 7/48);
+                            *(input[0]+2) += (err * 5/48);
+                            *(input[1]  ) += (err * 7/48);
+                            *(input[1]+1) += (err * 5/48);
+                            *(input[1]+2) += (err * 3/48);
+                            *(input[1]-1) += (err * 5/48);
+                            *(input[1]-2) += (err * 3/48);
+                            *(input[2]  ) += (err * 5/48);
+                            *(input[2]+1) += (err * 3/48);
+                            *(input[2]+2) += (err * 1/48);
+                            *(input[2]-1) += (err * 3/48);
+                            *(input[2]-2) += (err * 1/48);
+                            
+                            input[0]++;
+                            input[1]++;
+                            input[2]++;
+                            p2++;
+                        }
+                    }
                 }
 
                 // with raster scan
                 else {
+                	if (y % 3 == 0) {
+                        input[0] = buf[1] + 2;
+                        input[1] = buf[2] + 2;
+                        input[2] = buf[0] + 2;
 
+                    } else if(y % 3 == 1) {
+                        input[0] = buf[2] + 2;
+                        input[1] = buf[0] + 2;
+                        input[2] = buf[1] + 2;
+
+                    } else {
+                        input[0] = buf[0] + 2;
+                        input[1] = buf[1] + 2;
+                        input[2] = buf[2] + 2;
+
+                    }
+                    for (int x = 0; x < w; x++) {
+                        *p2 = (*input[0] < th)? 0 : 255;
+                        err = *input[0] - *p2;
+
+                        *(input[0]+1) += (err * 7/48);
+                        *(input[0]+2) += (err * 5/48);
+                        *(input[1]  ) += (err * 7/48);
+                        *(input[1]+1) += (err * 5/48);
+                        *(input[1]+2) += (err * 3/48);
+                        *(input[1]-1) += (err * 5/48);
+                        *(input[1]-2) += (err * 3/48);
+                        *(input[2]  ) += (err * 5/48);
+                        *(input[2]+1) += (err * 3/48);
+                        *(input[2]+2) += (err * 1/48);
+                        *(input[2]-1) += (err * 3/48);
+                        *(input[2]-2) += (err * 1/48);
+
+                        input[0]++;
+                        input[1]++;
+                        input[2]++;
+                        p2++;
+                    }
                 }
-
     		}
     	}
+    	delete[] buf;
     }
     // without serpentine or raster scan
     else {
@@ -158,7 +348,7 @@ void bufferedCopy(ChannelPtr<uchar> P, short* buf, int kernelSize, int width) {
 	// copying the row pixels
 	for( ; i < kernelSize / 2; i++)
 		buf[i] = *P;
-	for( ; i < kernelSize/2+w -1; i++)
+	for( ; i < kernelSize/2+width -1; i++)
 		buf[i] = *P++;
 	for( ; i < bufSize; i ++)
 		buf[i] = *P;
