@@ -106,8 +106,8 @@ HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr
     					bufferedCopy(p1, buf1, kernelSize, w);
     					p1 = p1 + w;
 
-    					input1 = buf1 + 1;
-    					input2 = buf0 + 1;
+    					input1 = buf0 + 1;
+    					input2 = buf1 + 1;
 
     					for(int x  = 0; x < w; x ++) {
     						*p2 = (*input1 < th)? 0: MaxGray;
