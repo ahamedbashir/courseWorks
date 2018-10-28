@@ -8,9 +8,11 @@
 //
 
 void row_Blur(ChannelPtr<uchar> p1, ChannelPtr<uchar> p2, int length, int width, int jump) {
+	// make the row odd
 	if(width % 2 == 0)
 		width++;
 
+	// num of pixel on either side
 	int numOfNeighbors = width / 2;
 	int bufSize = length + width - 1;
 
@@ -22,6 +24,7 @@ void row_Blur(ChannelPtr<uchar> p1, ChannelPtr<uchar> p2, int length, int width,
 	for(int i = 0; i < numOfNeighbors; i++)
 		buf[i] = *p1;
 
+	// copy pixels
 	for( int i = numOfNeighbors; i < numOfNeighbors + length; i++) {
 		buf[i] = p1[idx];
 		idx += jump;
@@ -33,6 +36,8 @@ void row_Blur(ChannelPtr<uchar> p1, ChannelPtr<uchar> p2, int length, int width,
 
 	for(int i = 0; i < width; i++)
 		sum += buf[i];
+
+	// blurred individual pixel
 	for(int i = 0; i < length; i++) {
 		int pos = i*jump;
 		p2[pos] = sum / width;
