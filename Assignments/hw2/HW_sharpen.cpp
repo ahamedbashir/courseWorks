@@ -3,6 +3,10 @@
 //
 // Sharpen image I1. Output is in I2.
 //
+
+
+
+
 // how to call HW_blur ????
 
 // fixed it... using extern
@@ -36,6 +40,7 @@ HW_sharpen(ImagePtr I1, int size, double factor, ImagePtr I2)
 		// blur the image
 		// ? Why not call the HW_blur function... nice
 		// multiply with factor with the blurred diff and add with original value
+
 		HW_blur(I1, size, size, I2);
 		for(int ch = 0; IP_getChannel(I1, ch, p1, type); ch++) {
 			IP_getChannel(I2, ch, p2, type);
