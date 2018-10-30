@@ -14,7 +14,7 @@
 - [x]  1. Error Diffusion ** Use the new Implementation method, not this old one**
 - [x]  2. Blurring
 - [x]  3. Sharpening
-- [ ]  4. Median Filtering
+- [x]  4. Median Filtering
 - [ ]  5. Convolution
 
 ### HW 03 Status
