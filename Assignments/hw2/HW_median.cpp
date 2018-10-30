@@ -33,6 +33,8 @@ HW_median(ImagePtr I1, int sz, ImagePtr I2)
 	// make the row odd as usual
 	if(sz % 2 == 0)
 		sz++;
+	if(sz > 9)
+		sz = 9;
 
 	if(sz == 1) {
 		// just copy like I did on sharpening.. hah hah
@@ -100,24 +102,24 @@ void bufferedRowCopy(ChannelPtr<uchar> P, short* buf, int kernelSize, int width)
 		buf[i] = *P;
 }
 
-int medianOfNeighbors(std::vector<int> neighbors, int numOfNeighbors) {
+int medianOfNeighbors(std::vector<int> neighbors, int numOfNearestNeighbors) {
 	int total = neighbors.size();
 	if(total == 1)
 		return neighbors[0];
 	else {
 		std::sort(neighbors.begin(), neighbors.end());
 		int mid = total / 2;
-		if(numOfNeighbors == 0){
+		if(numOfNearestNeighbors == 0){
 			if(total %2 != 0)
 				return neighbors[mid];
 			else
-				return (neighbors[mid] + neighbors[mid-1])/2;
+				return std::ceil((neighbors[mid] + neighbors[mid-1])/2);
 		}
 
 		else {
 			short sum = neighbors[mid];
 			int i = 0;
-			for(i = 1; i <= numOfNeighbors; i++)
+			for(i = 1; i <= numOfNearestNeighbors; i++)
 				sum = (sum + neighbors[mid-i] + neighbors[mid+i]);
 
 			return sum/(2*i + 1);
