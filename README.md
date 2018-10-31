@@ -15,7 +15,7 @@
 - [x]  2. Blurring
 - [x]  3. Sharpening
 - [x]  4. Median Filtering
-- [ ]  5. Convolution
+- [x]  5. Convolution
 
 ### HW 03 Status
 
