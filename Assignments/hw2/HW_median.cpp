@@ -36,57 +36,47 @@ HW_median(ImagePtr I1, int sz, ImagePtr I2)
 	if(sz > 9)
 		sz = 9;
 
-	if(sz == 1) {
-		// just copy like I did on sharpening.. hah hah
-		for(int ch = 0; IP_getChannel(I1, ch, p1, type); ch++){ 
-			IP_getChannel(I2, ch, p2, type);
-			for(endPtr = p1 + total; p1 < endPtr; )
-				*p2++ = *p1++;
-		}
-	}
-	else if (sz > 1) {
-		// do the processing.... concentrate
-		short* buf[sz];
-		int length = sz + w - 1;
-		for(int i = 0; i < sz; i++)
-			buf[i] = new short[length];
+	// do the processing.... concentrate
+	short* buf[sz];
+	int length = sz + w - 1;
+	for(int i = 0; i < sz; i++)
+		buf[i] = new short[length];
 
-		for(int ch = 0; IP_getChannel(I1, ch, p1, type); ch++) {
-			IP_getChannel(I2, ch, p2, type);
-			endPtr = p1 + total;
-			int px;
-			for(px = 0; px < sz/2; px++)
-				bufferedRowCopy(p1, buf[px], sz, w);
-			for( ; px < sz; px++ ) {
-				bufferedRowCopy(p1, buf[px], sz, w);
-				p1  = p1 + w;
+	for(int ch = 0; IP_getChannel(I1, ch, p1, type); ch++) {
+		IP_getChannel(I2, ch, p2, type);
+		endPtr = p1 + total;
+		int px;
+		for(px = 0; px < sz/2; px++)
+			bufferedRowCopy(p1, buf[px], sz, w);
+		for( ; px < sz; px++ ) {
+			bufferedRowCopy(p1, buf[px], sz, w);
+			p1  = p1 + w;
+		}
+
+		std::vector<int> neighbors(0);
+		for(int y = 0; y < h; y++) {
+			for(int j = 0; j < sz; j++) {
+				for(int i = 0; i < sz; i++)
+					neighbors.push_back(buf[i][j]);
 			}
 
-			std::vector<int> neighbors(0);
-			for(int y = 0; y < h; y++) {
-				for(int j = 0; j < sz; j++) {
+			for(int x = 0; x < w; x++) {
+				*p2++ = medianOfNeighbors(neighbors, numOfNearestNeighbors);
+				if( x < w - 1) {
+					neighbors.erase(neighbors.begin(), neighbors.begin()+sz);
 					for(int i = 0; i < sz; i++)
-						neighbors.push_back(buf[i][j]);
+						neighbors.push_back(buf[i][sz+x]);
 				}
-
-				for(int x = 0; x < w; x++) {
-					*p2++ = medianOfNeighbors(neighbors, numOfNearestNeighbors);
-					if( x < w - 1) {
-						neighbors.erase(neighbors.begin(), neighbors.begin()+sz);
-						for(int i = 0; i < sz; i++)
-							neighbors.push_back(buf[i][sz+x]);
-					}
-				}
-				neighbors.clear();
-				bufferedRowCopy(p1, buf[(sz + y -1)%sz], sz, w);
-				if(p1 < endPtr - w)
-					p1 = p1 + w;
-
 			}
+			neighbors.clear();
+			bufferedRowCopy(p1, buf[(sz + y -1)%sz], sz, w);
+			if(p1 < endPtr - w)
+				p1 = p1 + w;
+
 		}
-		for(int i = 0; i < sz; i++)
-			delete[] buf[i];
 	}
+	for(int i = 0; i < sz; i++)
+		delete[] buf[i];
 
 }
 
