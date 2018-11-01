@@ -7,6 +7,13 @@
 // Output is in I2.
 //
 
+
+//  Written by :  BASHIR AHAMED
+//                SHOFIQUR RAHMAN
+//                UCHA SAMADASHVILI
+//
+//  Semester   :  FALL 2018
+
 void row_Blur(ChannelPtr<uchar> p1, ChannelPtr<uchar> p2, int length, int width, int jump) {
 	// make the row odd
 	if(width % 2 == 0)

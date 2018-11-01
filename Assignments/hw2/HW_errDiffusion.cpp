@@ -24,6 +24,14 @@
 // Output is saved in I2.
 //
 
+
+//  Written by :  BASHIR AHAMED
+//                SHOFIQUR RAHMAN
+//                UCHA SAMADASHVILI
+//
+//  Semester   :  FALL 2018
+
+
 // function for gamma correction
 void gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2);
 
@@ -33,358 +41,200 @@ void bufferedCopy(ChannelPtr<uchar> P, short* buf, int kernelSize, int width);
 void
 HW_errDiffusion(ImagePtr I1, int method, bool serpentine, double gamma, ImagePtr I2)
 {
-	ImagePtr I1_temp;
-	IP_copyImageHeader(I1, I1_temp);
-	IP_copyImageHeader(I1, I2);
+  // weights for floyed-steinberg method
+    double fl_st[4];
+    fl_st[0] = 7/16.0;
+    fl_st[1] = 5/16.0;
+    fl_st[2] = 3/16.0;
+    fl_st[3] = 1/16.0;
+// weights for Jarvis-Judice-Ninke method
+    double jjn[4];
+    jjn[0] = 7/48.0;
+    jjn[1] = 5/48.0;
+    jjn[2] = 3/48.0;
+    jjn[3] = 1/48.0;
 
-	// gamma corrected image copied into I1_temp
-	gammaCorrect(I1, gamma, I1_temp);
+    ImagePtr I1_temp;
+    IP_copyImageHeader(I1, I2);
 
-	int w = I1->width();
+    // gamma corrected image copied into I1_temp
+    gammaCorrect(I1, gamma, I1_temp);
+
+    int w = I1->width();
     int h = I1->height();
-    int total = w*h;
     int type;
     ChannelPtr<uchar> p1, p2, endPtr;
-
-
-    int kernelSize = 3;
+    // int kernelSize = 3;
     // threshold is
     int th = MXGRAY/2;
+    uchar* p2_temp;
 
-    // Floyd-Steinberg method
+    // circular buffer
+    short* buf[3];
+    buf[0] = new short[w+4];
+    buf[1] = new short[w+4];
+    buf[2] = new short[w+4];
+    // padding with two extra space for both side of the row
+    short* rowBuf0 = buf[0] + 2;
+    short* rowBuf1 = buf[1] + 2;
+    short* rowBuf2 = buf[2] + 2;
+    int err;
+    
+    for(int ch=0; IP_getChannel(I1_temp,ch,p1,type); ch++){
+      IP_getChannel(I2,ch,p2,type);
 
-    if ( method == 0) {
-    	short* input1;
-    	short* input2;
+      //floyd-Steinberg
+      if(method == 0) { 
+        // 
+        for(int i = 0; i < w; i ++)
+          rowBuf0[i] = *p1++;
+        // copy 1st row
+        for(int i = 0; i < w; i++)
+          rowBuf1[i] = *p1++;
 
-    	short err;
+        // padding on both side of the rows
+        rowBuf0[w] = rowBuf0[w-1];
+        rowBuf0[-1] = rowBuf0[0];
+        rowBuf1[w] = rowBuf1[w-1];
+        rowBuf1[-1] = rowBuf1[0]; 
 
-    	int bufSize  = w + 2;
-
-    	// top row buffer
-    	short* buf0 = new short[bufSize];
-    	// bottom row buffer
-    	short* buf1 = new short[bufSize];
-
-    	for(int ch = 0; IP_getChannel(I1_temp, ch, p1, type); ch++) {
-    		IP_getChannel(I2, ch, p2, type);
-
-    		// copy 1st row to buffer
-    		bufferedCopy(p1, buf0, kernelSize, w);
-
-    		p1 += w;
-
-    		// iterate over all the rows y from 2nd row ( y =1 )
-    		for(int  y = 1; y < h; y++) {
-    			// with serpentine scan
-    			if(serpentine) {
-    				// even row, move from right to left
-    				if(y % 2 == 0) {
-    					bufferedCopy(p1, buf0, kernelSize, w);
-    					p1 = p1 + w;
-    					p2 = p2 + w -1;
-
-    					input1 = buf1 + w + 1;
-    					input2 = buf0 + w + 1;
-
-    					for(int x  = 0; x < w; x ++) {
-    						*p2 = (*input1 < th)? 0: MaxGray;
-    						err = *input1 - *p2;
-    						*(input1 - 1) += ( err * 7/16.0);
-    						*(input2 + 1) += ( err * 3/16.0);
-    						*(input2 )    += ( err * 5/16.0);
-    						*(input2 - 1) += ( err * 1/16.0);
-
-    						input1--;
-    						input2--;
-    						p2--;
-    					}
-    					p2 = p2 + w +1;
-    				}
-    				// odd row move from left to right
-    				else {
-    					bufferedCopy(p1, buf1, kernelSize, w);
-    					p1 = p1 + w;
-
-    					input1 = buf0 + 1;
-    					input2 = buf1 + 1;
-
-    					for(int x  = 0; x < w; x ++) {
-    						*p2 = (*input1 < th)? 0: MaxGray;
-    						err = *input1 - *p2;
-    						*(input1 + 1) += ( err * 7/16.0);
-    						*(input2 - 1) += ( err * 3/16.0);
-    						*(input2 )    += ( err * 5/16.0);
-    						*(input2 + 1) += ( err * 1/16.0);
-
-    						input1++;
-    						input2++;
-    						p2++;
-    					}
-
-    				}
-    			}
-
-    			// with raster scan
-    			else {
-    				if( y %2 == 0) {
-    					bufferedCopy(p1, buf0, kernelSize, w);
-    					input1 = buf1 + 1;
-    					input2 = buf0 + 1;
-    				}
-
-    				else {
-    					bufferedCopy(p1, buf1, kernelSize, w);
-    					input1 = buf0 + 1;
-    					input2 = buf1 + 1;
-    				}
-    				p1 += w;
-
-    				for(int x  = 0; x < w; x ++) {
-    						*p2 = (*input1 < th)? 0: MaxGray;
-    						err = *input1 - *p2;
-    						*(input1 + 1) += ( err * 7/16.0);
-    						*(input2 - 1) += ( err * 3/16.0);
-    						*(input2 )    += ( err * 5/16.0);
-    						*(input2 + 1) += ( err * 1/16.0);
-
-    						input1++;
-    						input2++;
-    						p2++;
-    					}
-
-    			}
-    		}
-    	}
-
-    	delete[] buf0;
-    	delete[] buf1;
-
+        // iterate over all the rows remaining
+        for(int i = 0; i < h; i++) {
+          p2_temp = (uchar *)&p2[0];
+          // raster scan
+          if( !serpentine || i%2 != 0 ) {
+            for(int j = 0; j < w; j++){
+              p2_temp[j] = (rowBuf0[j] < th)? 0: MaxGray;
+              err = rowBuf0[j] - p2_temp[j];
+              rowBuf0[j+1] += err * fl_st[0];
+              rowBuf1[j-1] += err * fl_st[2];
+              rowBuf1[j]   += err * fl_st[1];
+              rowBuf1[j+1] += err * fl_st[3];
+              }
+            }
+            // serpentine scan
+            else if(serpentine){
+              for(int j = w-1; j >= 0; j--){
+                p2_temp[j] = (rowBuf0[j] < th)? 0: MaxGray;
+                err = rowBuf0[j] - p2_temp[j];
+                rowBuf1[j-1] += err * fl_st[0];
+                rowBuf0[j+1] += err * fl_st[2];
+                rowBuf1[j]   += err * fl_st[1];
+                rowBuf1[j-1] += err * fl_st[3];
+              }
+            }
+            // swap rows
+          rowBuf0 = rowBuf1;
+          rowBuf1 = buf[i%2] + 2;
+          // update rows after swap
+          if(i < h-2){
+            for(int j = 0; j < w; j++)
+              rowBuf1[j] = *p1++;
+          }
+          p2 += w;
+      }
     }
 
+    //Jarvis-Judice-Ninke
+    if(method == 1) {
+      // copy rows
+      for(int i = 0; i < w; i++)
+        rowBuf0[i] = *p1++;
+      for(int i = 0; i < w; i++)
+         rowBuf1[i] = *p1++;
+      for(int i = 0; i < w; i++)
+          rowBuf2[i] = *p1++;
+      // padding rows on both side
+      rowBuf0[-2] = rowBuf0[-1] = rowBuf0[0];
+      rowBuf0[w+1] = rowBuf0[w] = rowBuf0[w-1];
+      rowBuf1[-2] = rowBuf1[-1] = rowBuf1[0];
+      rowBuf1[w+1] = rowBuf1[w] = rowBuf1[w-1];
+      rowBuf2[-2] = rowBuf2[-1] = rowBuf2[0];
+      rowBuf2[w+1] = rowBuf2[w] = rowBuf2[w-1];
+          
+      for(int i = 0; i < h; i++){
+        p2_temp = (uchar *)&p2[0];
+        // raster scan
+        if(!serpentine || i%2 != 0){
+          for(int j = 0; j < w; j++){
+            p2_temp[j] = (rowBuf0[j] < th)? 0: MaxGray;
+            err = rowBuf0[j] - p2_temp[j];
+            rowBuf0[j+1] += err * jjn[0];
+            rowBuf0[j+2] += err * jjn[1];
+            rowBuf1[j-2] += err * jjn[2];
+            rowBuf1[j-1] += err * jjn[1];
+            rowBuf1[j]   += err * jjn[0];
+            rowBuf1[j+1] += err * jjn[1];
+            rowBuf1[j+2] += err * jjn[2];
+            rowBuf2[j-2] += err * jjn[3];
+            rowBuf2[j-1] += err * jjn[2];
+            rowBuf2[j]   += err * jjn[1];
+            rowBuf2[j+1] += err * jjn[2];
+            rowBuf2[j+2] += err * jjn[3];
+            }
+          }
 
-    // Jarvis-Judice-Ninke method
+          // serpentine scan
+          else{
+            for(int j  = w-1; j >= 0; j--){
+              p2_temp[j] = (rowBuf0[j] < th)? 0: MaxGray;
+              
+              err = rowBuf0[j] - p2_temp[j];
+              rowBuf0[j-1] += err * jjn[0];
+              rowBuf0[j-2] += err * jjn[1];
+              rowBuf1[j+2] += err * jjn[2];
+              rowBuf1[j+1] += err * jjn[1];
+              rowBuf1[j]   += err * jjn[0];
+              rowBuf1[j-1] += err * jjn[1];
+              rowBuf1[j-2] += err * jjn[2];
+              rowBuf2[j+2] += err * jjn[3];
+              rowBuf2[j+1] += err * jjn[2];
+              rowBuf2[j]   += err * jjn[1];
+              rowBuf2[j-1] += err * jjn[2];
+              rowBuf2[j-2] += err * jjn[3];
+            }
+          }
 
-    else if (method == 1) {
-
-    	int err;
-    	int bufSize  = w + 4;
-    	kernelSize = 5;
-
-    	short** input = new short*[3];
-    	short** buf = new short*[3];
-    	for(int i = 0; i < 3; i++)
-    		buf[i] = new short[bufSize];
-
-    	for(int ch = 0; IP_getChannel(I1_temp, ch, p1, type); ch++) {
-    		IP_getChannel(I2, ch, p2, type);
-
-    		// copy top two rows into the buffered array
-    		bufferedCopy(p1, buf[0], kernelSize, w);
-    		bufferedCopy(p1, buf[1], kernelSize, w);
-    		p1 += w;
-
-    		// iterate over all the remaining rows
-    		for(int y = 2; y < h; y++) {
-    			if (y % 3 == 0)
-    				bufferedCopy(p1, buf[0], kernelSize, w);
-                else if (y % 3 == 1)
-                	bufferedCopy(p1, buf[1], kernelSize, w);
-                else if (y % 3 == 2)
-                	bufferedCopy(p1, buf[2], kernelSize, w);
-                
-                p1 = p1 + w;
-
-                // with serpentine scan
-                if(serpentine) {
-                	// even rows, scan from right to left
-                	if (y % 2 == 0) {
-                        if (y % 3 == 0) {
-                            input[0] = buf[1] + w + 2;
-                            input[1] = buf[2] + w + 2;
-                            input[2] = buf[0] + w + 2;
-
-                        } else if (y % 3 == 1) {
-                            input[0] = buf[2] + w + 2;
-                            input[1] = buf[0] + w + 2;
-                            input[2] = buf[1] + w + 2;
-
-                        } else {
-                            input[0] = buf[0] + w + 2;
-                            input[1] = buf[1] + w + 2;
-                            input[2] = buf[2] + w + 2;
-
-                        }
-
-                        p2 = p2 + w - 1;
-                        for (int x = 0; x < w; x++) {
-                            *p2 = (*input[0] < th)? 0 : 255;
-                            err = *input[0] - *p2;
-
-                            *(input[0]-1) += (err * 7/48);
-                            *(input[0]-2) += (err * 5/48);
-                            *(input[1]  ) += (err * 7/48);
-                            *(input[1]+1) += (err * 5/48);
-                            *(input[1]+2) += (err * 3/48);
-                            *(input[1]-1) += (err * 5/48);
-                            *(input[1]-2) += (err * 3/48);
-                            *(input[2]  ) += (err * 5/48);
-                            *(input[2]+1) += (err * 3/48);
-                            *(input[2]+2) += (err * 1/48);
-                            *(input[2]-1) += (err * 3/48);
-                            *(input[2]-2) += (err * 1/48);
-                            
-                            input[0]--;
-                            input[1]--;
-                            input[2]--;
-                            p2--;
-                        }
-                        p2 = p2 + w + 1;
-                    }
-
-                    // odd rows, scan from left to right
-                    else {
-                        if (y % 3 == 0) {
-                            input[0] = buf[1] + 2;
-                            input[1] = buf[2] + 2;
-                            input[2] = buf[0] + 2;
-
-                        } else if(y % 3 == 1) {
-                            input[0] = buf[2] + 2;
-                            input[1] = buf[0] + 2;
-                            input[2] = buf[1] + 2;
-
-                        } else {
-                            input[0] = buf[0] + 2;
-                            input[1] = buf[1] + 2;
-                            input[2] = buf[2] + 2;
-
-                        }
-                        for (int x = 0; x < w; x++) {
-                            *p2 = (*input[0] < th)? 0 : 255;
-                            err = *input[0] - *p2;
-
-                            *(input[0]+1) += (err * 7/48);
-                            *(input[0]+2) += (err * 5/48);
-                            *(input[1]  ) += (err * 7/48);
-                            *(input[1]+1) += (err * 5/48);
-                            *(input[1]+2) += (err * 3/48);
-                            *(input[1]-1) += (err * 5/48);
-                            *(input[1]-2) += (err * 3/48);
-                            *(input[2]  ) += (err * 5/48);
-                            *(input[2]+1) += (err * 3/48);
-                            *(input[2]+2) += (err * 1/48);
-                            *(input[2]-1) += (err * 3/48);
-                            *(input[2]-2) += (err * 1/48);
-                            
-                            input[0]++;
-                            input[1]++;
-                            input[2]++;
-                            p2++;
-                        }
-                    }
-                }
-
-                // with raster scan
-                else {
-                	if (y % 3 == 0) {
-                        input[0] = buf[1] + 2;
-                        input[1] = buf[2] + 2;
-                        input[2] = buf[0] + 2;
-
-                    } else if(y % 3 == 1) {
-                        input[0] = buf[2] + 2;
-                        input[1] = buf[0] + 2;
-                        input[2] = buf[1] + 2;
-
-                    } else {
-                        input[0] = buf[0] + 2;
-                        input[1] = buf[1] + 2;
-                        input[2] = buf[2] + 2;
-
-                    }
-                    for (int x = 0; x < w; x++) {
-                        *p2 = (*input[0] < th)? 0 : 255;
-                        err = *input[0] - *p2;
-
-                        *(input[0]+1) += (err * 7/48);
-                        *(input[0]+2) += (err * 5/48);
-                        *(input[1]  ) += (err * 7/48);
-                        *(input[1]+1) += (err * 5/48);
-                        *(input[1]+2) += (err * 3/48);
-                        *(input[1]-1) += (err * 5/48);
-                        *(input[1]-2) += (err * 3/48);
-                        *(input[2]  ) += (err * 5/48);
-                        *(input[2]+1) += (err * 3/48);
-                        *(input[2]+2) += (err * 1/48);
-                        *(input[2]-1) += (err * 3/48);
-                        *(input[2]-2) += (err * 1/48);
-
-                        input[0]++;
-                        input[1]++;
-                        input[2]++;
-                        p2++;
-                    }
-                }
-    		}
-    	}
-    	delete[] buf;
-    }
-    // without serpentine or raster scan
-    else {
-    	for(int ch = 0; IP_getChannel(I1_temp, ch, p1, type); ch++) {
-            IP_getChannel(I2, ch, p2, type);
-            for(endPtr = p1 + total; p1 < endPtr; )
-            	*p2++ = *p1++;
+          // swap rows 
+          rowBuf0 = rowBuf1;
+          rowBuf1 = rowBuf2;
+          rowBuf2 = buf[i%3] + 2;
+          //update swapped rows
+          if(i < h-3){
+            for(int j = 0; j < w; j++){
+               rowBuf2[j] = *p1++;
+             }
+          }
+          p2 += w;
         }
+      }
+    }
+    // clear buf
+    for(int i=0; i<3; i++){
+      delete[] buf[i];
+    }
+  }
+
+  // gamma correction function from HW1_gamma.cpp
+  void gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2)
+  {
+    IP_copyImageHeader(I1, I2);
+    int w = I1->width();
+    int h = I1->height();
+    int total = w*h;
+    double expGamma = 1/gamma;
+    int i,  lut[MXGRAY];
+    for(i = 0; i < MXGRAY; ++i)
+        lut[i] = CLIP(int(pow((double)i/MaxGray, expGamma ) * MaxGray), 0,MaxGray);
+
+    ChannelPtr<uchar> p1, p2, endPtr;
+    int type;
+    // update the corresponding output pixel of the imput image pixel based on the lut values
+    for(int ch = 0; IP_getChannel(I1, ch, p1, type); ++ch) {
+        IP_getChannel(I2, ch, p2, type);
+        for(endPtr = p1 + total; endPtr > p1; )
+            *p2++ = lut[*p1++];
     }
 }
 
-
-// function to copy a row pixels into a buffered array
-
-void bufferedCopy(ChannelPtr<uchar> P, short* buf, int kernelSize, int width) {
-	int i = 0, bufSize = kernelSize + width - 1;
-	// copying the row pixels
-	for( ; i < kernelSize / 2; i++)
-		buf[i] = *P;
-	for( ; i < kernelSize/2+width -1; i++)
-		buf[i] = *P++;
-	for( ; i < bufSize; i ++)
-		buf[i] = *P;
-}
-
-
-// gamma correction function from HW1_gamma.cpp
-void gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2)
-{
-	IP_copyImageHeader(I1, I2);
-
-	int w = I1->width();
-	int h = I1->height();
-	int total = w*h;
-
-	double expGamma = 1/gamma;
-
-	int i,  lut[MXGRAY];
-	
-	for(i = 0; i < MXGRAY; ++i)
-		// PixelOut = Constant * PixelInput^gamma
-		// here to make it linear gamma = 1/given gamma
-		// distribute i over the range (0, MXGRAY)
-		lut[i] = CLIP(int(pow((double)i/MaxGray, expGamma ) * MaxGray), 0,MaxGray);
-	
-	ChannelPtr<uchar> p1, p2, endPtr;
-	int type;
-
-	// update the corresponding output pixel of the imput image pixel
-	// based on the lut values 
-
-	for(int ch = 0; IP_getChannel(I1, ch, p1, type); ++ch) {
-		IP_getChannel(I2, ch, p2, type);
-		
-		for(endPtr = p1 + total; endPtr > p1; )
-			*p2++ = lut[*p1++];
-	}
-}
 

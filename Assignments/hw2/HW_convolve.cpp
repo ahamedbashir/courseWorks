@@ -5,6 +5,12 @@
 // Output is in I2.
 //
 
+//  Written by :  BASHIR AHAMED
+//                SHOFIQUR RAHMAN
+//                UCHA SAMADASHVILI
+//
+//  Semester   :  FALL 2018
+
 // function to copy row pixels into a buffer
 extern void bufferedRowCopy(ChannelPtr<uchar> P, short* buf, int kernelSize, int width);
 void
@@ -56,7 +62,7 @@ HW_convolve(ImagePtr I1, ImagePtr Ikernel, ImagePtr I2)
   				kernelPtr = (kernelPtr - kernelSize * kernelSize);
  			}
 
-	 		// update the buffered rows by removing padded rows
+	 		// cicularly update the buffer
 	 		for(int i = 0; i < kernelSize - 1; i++) {
 	 			for(int j = 0; j < length; j++)
 					buf[i][j] = buf[i+1][j];
