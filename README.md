@@ -18,8 +18,14 @@
 - [x]  5. Convolution
 
 ### HW 03 Status
+- [x]  1. Fourier Analysis
+- [x]  2. Fourier Synthesis
+- [ ]  3. DFT 1d
+- [ ]  4. FFT 1d
+- [ ]  5. DFT properties
+- [ ]  6. Spectram using FFT 2d
+- [ ]  7. Image Swapping using FFT 2d
 
-NA
 
 
 ### Project Status
