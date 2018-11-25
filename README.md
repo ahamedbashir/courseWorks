@@ -23,8 +23,8 @@
 - [x]  3. DFT 1d
 - [x]  4. FFT 1d
 - [x]  5. DFT properties
-- [ ]  6. Spectram using FFT 2d
-- [ ]  7. Image Swapping using FFT 2d
+- [x]  6. Spectram using FFT 2d
+- [x]  7. Image Swapping using FFT 2d
 
 
 
