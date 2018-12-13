@@ -28,6 +28,6 @@
 
 
 
-### Project Status
-
-NA
+### HW 04 Status
+- [x]  1. Resize 1D input
+- [x]  2. Resize image using resize1D
