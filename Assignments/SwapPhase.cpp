@@ -1,26 +1,26 @@
 // ======================================================================
 // IMPROC: Image Processing Software Package
-// Copyright (C) 2017 by George Wolberg
+// Copyright (C) 2018 by George Wolberg
 //
-// Swap.cpp - Swap widget.
+// SwapPhase.cpp - Swap phase spectrum widget.
 //
-// Written by: George Wolberg, 2017
+// Written by: George Wolberg, 2018
 // ======================================================================
 
 #include "MainWindow.h"
-#include "Swap.h"
-#include "hw3/HW_swap.cpp"
+#include "SwapPhase.h"
+#include "hw3/HW_swapPhase.cpp"
 
 extern MainWindow *g_mainWindowP;
 
 enum { WSIZE, HSIZE, STEPX, STEPY, KERNEL, SAMPLER };
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Swap::Swap:
+// SwapPhase::SwapPhase:
 //
 // Constructor.
 //
-Swap::Swap(QWidget *parent) : ImageFilter(parent)
+SwapPhase::SwapPhase(QWidget *parent) : ImageFilter(parent)
 {
 	m_2ndImage = NULL;
 }
@@ -28,22 +28,21 @@ Swap::Swap(QWidget *parent) : ImageFilter(parent)
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Swap::controlPanel:
+// SwapPhase::controlPanel:
 //
 // Create group box for control panel.
 //
 QGroupBox*
-Swap::controlPanel()
+SwapPhase::controlPanel()
 {
 	// init group box
-	m_ctrlGrp = new QGroupBox("Swap");
+	m_ctrlGrp = new QGroupBox("Swap Phase");
 
 	// layout for assembling filter widget
 	QVBoxLayout *vbox = new QVBoxLayout;
 
 	// create file pushbutton
 	m_button = new QPushButton("Second Image");
-
 
 	// assemble dialog
 	vbox->addWidget(m_button);
@@ -58,28 +57,31 @@ Swap::controlPanel()
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Swap::applyFilter:
+// SwapPhase::applyFilter:
 //
 // Run filter on the image, transforming I1 to I2.
 // Overrides ImageFilter::applyFilter().
 // Return 1 for success, 0 for failure.
 //
 bool
-Swap::applyFilter(ImagePtr I1, bool gpuFlag, ImagePtr I2)
+SwapPhase::applyFilter(ImagePtr I1, bool gpuFlag, ImagePtr I2)
 {
 	// error checking
 	if(I1.isNull())		return 0;
 	if(m_2ndImage.isNull())	return 0;
+
+	// init vars
 	m_width  = I1->width();
 	m_height = I1->height();
-	// Swap image
+
+	// swap phase spectrums of two images
 	if(!(gpuFlag && m_shaderFlag)) {
 		ImagePtr II1 = NEWIMAGE;
 		ImagePtr II2 = NEWIMAGE;
 		ImagePtr firstImage;
 		IP_copyImage(I1, firstImage);
 		IP_castImage(firstImage, BW_IMAGE, firstImage);
-		swap(firstImage, m_2ndImage, II1, II2);
+		swapPhase(firstImage, m_2ndImage, II1, II2);
 
 		int tx = 5;
 		int ty = 5;
@@ -109,27 +111,28 @@ Swap::applyFilter(ImagePtr I1, bool gpuFlag, ImagePtr I2)
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Swap::Swap:
+// SwapPhase::swapPhase:
 //
-// swap magnitude of I1 with phase I2 and
-// swap magnitude of I2 with phase I1
+// Swap phase spectrums of I1 and I2.
 // Output is in II1 and II2.
 //
 void
-Swap::swap(ImagePtr I1,ImagePtr I2, ImagePtr II1, ImagePtr II2)
+SwapPhase::swapPhase(ImagePtr I1,ImagePtr I2, ImagePtr II1, ImagePtr II2)
 {
-	HW_swap(I1, I2, II1, II2);
+	HW_swapPhase(I1, I2, II1, II2);
+IP::IP_saveImage(II1, "out1.jpg", "JPG");
+IP::IP_saveImage(II2, "out2.jpg", "JPG");
 }
 
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Swap::load:
+// SwapPhase::load:
 //
 // Slot to load second image from file.
 //
 int
-Swap::load()
+SwapPhase::load()
 {
 	QFileDialog dialog(this);
 
@@ -155,6 +158,7 @@ Swap::load()
 	// read kernel
 	m_2ndImage = IP_readImage(qPrintable(m_file));
 	IP_castImage(m_2ndImage, BW_IMAGE, m_2ndImage);
+
 	// update button with filename (without path)
 	m_button->setText(f.fileName());
 	m_button->update();
@@ -168,12 +172,12 @@ Swap::load()
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Swap::initShader:
+// SwapPhase::initShader:
 //
 // init shader program and parameters.
 //
 void
-Swap::initShader() 
+SwapPhase::initShader() 
 {
 	// flag to indicate shader availability
 	m_shaderFlag = false;
@@ -182,9 +186,9 @@ Swap::initShader()
 
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Swap::gpuProgram:
+// SwapPhase::gpuProgram:
 //
 // Invoke GPU program
 //
 void
-Swap::gpuProgram(int) {}
+SwapPhase::gpuProgram(int) {}

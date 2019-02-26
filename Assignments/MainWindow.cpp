@@ -1,10 +1,10 @@
 // ===============================================================
 // Computer Graphics Homework Solutions
-// Copyright (C) 2017 by George Wolberg
+// Copyright (C) 2018 by George Wolberg
 //
 // MainWindow.cpp - MainWindow class
 //
-// Written by: George Wolberg, 2017
+// Written by: George Wolberg, 2018
 // ===============================================================
 
 #include "MainWindow.h"
@@ -22,8 +22,9 @@
 #include "Median.h"
 #include "Convolve.h"
 #include "Spectrum.h"
-#include "Swap.h"
-
+#include "SwapPhase.h"
+#include "Filter.h"
+#include "Resize.h"
 
 
 using namespace IP;
@@ -171,13 +172,20 @@ MainWindow::createActions()
 	m_actionSpectrum->setShortcut(tr("Ctrl+P"));
 	m_actionSpectrum->setData(SPECTRUM);
 
-	m_actionSwap = new QAction("S&wap", this);
-	m_actionSwap->setShortcut(tr("Ctrl+W"));
-	m_actionSwap->setData(SWAP);
+	m_actionSwapPhase = new QAction("S&wap Phase", this);
+	m_actionSwapPhase->setShortcut(tr("Ctrl+W"));
+	m_actionSwapPhase->setData(SWAPPHASE);
 
 	m_actionFilter = new QAction("&Filter", this);
 	m_actionFilter->setShortcut(tr("Ctrl+F"));
 	m_actionFilter->setData(FILTER);
+
+	//////////////////////////////
+	// Geometric Ops Actions
+	//////////////////////////////
+	m_actionResize = new QAction("&Resize", this);
+	m_actionResize->setShortcut(tr("Ctrl+R"));
+	m_actionResize->setData(RESIZE);
 
 	// one signal-slot connection for all actions;
 	// execute() will resolve which action was triggered
@@ -222,13 +230,18 @@ MainWindow::createMenus()
 	// Neighborhood Ops menu
 	m_menuFFT = menuBar()->addMenu("&Fourier Transform");
 	m_menuFFT->addAction(m_actionSpectrum);
-	m_menuFFT->addAction(m_actionSwap);
+	m_menuFFT->addAction(m_actionSwapPhase);
+	m_menuFFT->addAction(m_actionFilter);
 
+	// Geometric Ops menu
+	m_menuGeoOps = menuBar()->addMenu("&Geometric Ops");
+	m_menuGeoOps->addAction(m_actionResize);
 
 	// disable the following menus until input image is read
 	m_menuPtOps ->setEnabled(false);
 	m_menuNbrOps->setEnabled(false);
 	m_menuFFT   ->setEnabled(false);
+	m_menuGeoOps->setEnabled(false);
 }
 
 
@@ -286,8 +299,9 @@ MainWindow::createGroupPanel()
 	m_imageFilter[MEDIAN	] = new Median;
 	m_imageFilter[CONVOLVE	] = new Convolve;
 	m_imageFilter[SPECTRUM  ] = new Spectrum;
-	m_imageFilter[SWAP      ] = new Swap;
-
+	m_imageFilter[SWAPPHASE ] = new SwapPhase;
+	m_imageFilter[FILTER    ] = new Filter;
+	m_imageFilter[RESIZE    ] = new Resize;
 
 	// create a stacked widget to hold multiple control panels
 	m_stackWidgetPanels = new QStackedWidget;
@@ -307,8 +321,9 @@ MainWindow::createGroupPanel()
 	m_stackWidgetPanels->addWidget(m_imageFilter[MEDIAN	 ]->controlPanel());
 	m_stackWidgetPanels->addWidget(m_imageFilter[CONVOLVE	 ]->controlPanel());
 	m_stackWidgetPanels->addWidget(m_imageFilter[SPECTRUM    ]->controlPanel());
-	m_stackWidgetPanels->addWidget(m_imageFilter[SWAP        ]->controlPanel());
-
+	m_stackWidgetPanels->addWidget(m_imageFilter[SWAPPHASE   ]->controlPanel());
+	m_stackWidgetPanels->addWidget(m_imageFilter[FILTER      ]->controlPanel());
+	m_stackWidgetPanels->addWidget(m_imageFilter[RESIZE      ]->controlPanel());
 
 	// display blank dummmy panel initially
 	m_stackWidgetPanels->setCurrentIndex(DUMMY);
@@ -407,7 +422,7 @@ MainWindow::createGroupDisplay()
 	glf.setSamples(4);
 	glf.setSwapInterval(0);
 	glf.setDefaultFormat(glf);
-	m_glw = new GLWidget(glf, this);
+	m_glw = new GLWidget(glf);
 
 	// assemble stacked widget in vertical layout
 	QVBoxLayout *vbox = new QVBoxLayout;
@@ -655,12 +670,14 @@ MainWindow::open()
 	// init vars
 	m_width  = m_imageSrc->width ();
 	m_height = m_imageSrc->height();
+	m_imageFilter[RESIZE]->setImageSize(m_width, m_height);
 	preview();
 
 	// enable the following now that input image is read
 	m_menuPtOps	->setEnabled(true);
 	m_menuNbrOps	->setEnabled(true);
 	m_menuFFT       ->setEnabled(true);
+	m_menuGeoOps    ->setEnabled(true);
 	m_groupBoxPanels->setEnabled(true);
 }
 

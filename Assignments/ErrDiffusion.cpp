@@ -1,10 +1,10 @@
 // ======================================================================
 // IMPROC: Image Processing Software Package
-// Copyright (C) 2017 by George Wolberg
+// Copyright (C) 2018 by George Wolberg
 //
 // ErrDiffusion.cpp - Error diffusion class
 //
-// Written by: George Wolberg, 2017
+// Written by: George Wolberg, 2018
 // ======================================================================
 
 #include "MainWindow.h"

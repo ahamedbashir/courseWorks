@@ -1,5 +1,5 @@
 TEMPLATE    = app
-TARGET      = CS470.skel
+TARGET      = CS470
 QT 	   += widgets printsupport opengl
 RESOURCES   = CS470.qrc
 CONFIG     += qt debug_and_release
@@ -12,9 +12,7 @@ Debug:MOC_DIR       = debug/.moc
 
 INCLUDEPATH 	+= . ./IP/header
 
-win32-msvc2015{
-	Release:DESTDIR  = release
-	Debug:DESTDIR    = debug
+win32{
 	LIBS 		+= -L./IP/win/lib
 	CONFIG(release, debug|release) {
 		LIBS += -lIP
@@ -36,11 +34,7 @@ macx{
 	}
 	QMAKE_SONAME_PREFIX = @executable_path/../Frameworks
 	QMAKE_LFLAGS   += -Wl,-rpath,@executable_path/../Frameworks
-	QMAKE_LFLAGS   -= -mmacosx-version-min=10.8
-	QMAKE_LFLAGS   += -mmacosx-version-min=10.9
-	QMAKE_CXXFLAGS -= -mmacosx-version-min=10.8
-	QMAKE_CXXFLAGS += -mmacosx-version-min=10.9
-	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+	QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.11
 	ICON = CS470.icns
 }
 
@@ -74,7 +68,9 @@ HEADERS +=	MainWindow.h	\
 		GLWidget.h	\
 		Convolve.h	\
 		Spectrum.h	\
-		Swap.h
+		SwapPhase.h	\
+		Filter.h	\
+		Resize.h
 
 		
 SOURCES +=	main.cpp	\ 
@@ -96,4 +92,7 @@ SOURCES +=	main.cpp	\
 		GLWidget.cpp	\
 		Convolve.cpp	\
 		Spectrum.cpp	\
-		Swap.cpp		
+		SwapPhase.cpp	\
+		Filter.cpp	\
+		Resize.cpp	\
+		hw3/HW_utils.cpp

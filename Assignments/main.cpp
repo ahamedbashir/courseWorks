@@ -1,10 +1,10 @@
 // ======================================================================
 // Image Processing Homework Solutions
-// Copyright (C) 2017 by George Wolberg
+// Copyright (C) 2018 by George Wolberg
 //
 // main.c - main() function.
 //
-// Written by: George Wolberg, 2017
+// Written by: George Wolberg, 2018
 // ======================================================================
 
 #include "MainWindow.h"

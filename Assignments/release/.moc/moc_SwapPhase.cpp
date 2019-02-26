@@ -1,16 +1,16 @@
 /****************************************************************************
-** Meta object code from reading C++ file 'Swap.h'
+** Meta object code from reading C++ file 'SwapPhase.h'
 **
 ** Created by: The Qt Meta Object Compiler version 67 (Qt 5.9.5)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../../Swap.h"
+#include "../../SwapPhase.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
-#error "The header file 'Swap.h' doesn't include <QObject>."
+#error "The header file 'SwapPhase.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
 #error "This file was generated using the moc from 5.9.5. It"
 #error "cannot be used with the include files from this version of Qt."
@@ -20,27 +20,27 @@
 QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
-struct qt_meta_stringdata_Swap_t {
+struct qt_meta_stringdata_SwapPhase_t {
     QByteArrayData data[3];
-    char stringdata0[11];
+    char stringdata0[16];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_Swap_t, stringdata0) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_SwapPhase_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
-static const qt_meta_stringdata_Swap_t qt_meta_stringdata_Swap = {
+static const qt_meta_stringdata_SwapPhase_t qt_meta_stringdata_SwapPhase = {
     {
-QT_MOC_LITERAL(0, 0, 4), // "Swap"
-QT_MOC_LITERAL(1, 5, 4), // "load"
-QT_MOC_LITERAL(2, 10, 0) // ""
+QT_MOC_LITERAL(0, 0, 9), // "SwapPhase"
+QT_MOC_LITERAL(1, 10, 4), // "load"
+QT_MOC_LITERAL(2, 15, 0) // ""
 
     },
-    "Swap\0load\0"
+    "SwapPhase\0load\0"
 };
 #undef QT_MOC_LITERAL
 
-static const uint qt_meta_data_Swap[] = {
+static const uint qt_meta_data_SwapPhase[] = {
 
  // content:
        7,       // revision
@@ -62,10 +62,10 @@ static const uint qt_meta_data_Swap[] = {
        0        // eod
 };
 
-void Swap::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void SwapPhase::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        Swap *_t = static_cast<Swap *>(_o);
+        SwapPhase *_t = static_cast<SwapPhase *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
         case 0: { int _r = _t->load();
@@ -75,26 +75,26 @@ void Swap::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void *
     }
 }
 
-const QMetaObject Swap::staticMetaObject = {
-    { &ImageFilter::staticMetaObject, qt_meta_stringdata_Swap.data,
-      qt_meta_data_Swap,  qt_static_metacall, nullptr, nullptr}
+const QMetaObject SwapPhase::staticMetaObject = {
+    { &ImageFilter::staticMetaObject, qt_meta_stringdata_SwapPhase.data,
+      qt_meta_data_SwapPhase,  qt_static_metacall, nullptr, nullptr}
 };
 
 
-const QMetaObject *Swap::metaObject() const
+const QMetaObject *SwapPhase::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *Swap::qt_metacast(const char *_clname)
+void *SwapPhase::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_meta_stringdata_Swap.stringdata0))
+    if (!strcmp(_clname, qt_meta_stringdata_SwapPhase.stringdata0))
         return static_cast<void*>(this);
     return ImageFilter::qt_metacast(_clname);
 }
 
-int Swap::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int SwapPhase::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = ImageFilter::qt_metacall(_c, _id, _a);
     if (_id < 0)

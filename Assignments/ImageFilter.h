@@ -1,10 +1,10 @@
 // ======================================================================
 // Computer Graphics Homework Solutions
-// Copyright (C) 2017 by George Wolberg
+// Copyright (C) 2018 by George Wolberg
 //
 // ImageFilter.h - Header file for ImageFilter class. Base class of homework solutions.
 //
-// Written by: George Wolberg, 2017
+// Written by: George Wolberg, 2018
 // ======================================================================
 
 #ifndef IMAGEFILTER_H
@@ -23,13 +23,14 @@ class ImageFilter : public QWidget, protected QGLFunctions {
 
 public:
 	ImageFilter(QWidget *parent = 0);
-	virtual QGroupBox* controlPanel	();			    // create control panel
-	virtual bool	   applyFilter	(ImagePtr, bool, ImagePtr); // filter input image -> make output
-	virtual void	   reset	();			    // reset parameters
-	virtual void	   initShader   ();
-	virtual void	   gpuProgram   (int pass);		    // use GPU program to apply filter
-	bool		   gpuImplemented() { return m_shaderFlag;}
-	int		   gpuPasses     () { return m_nPasses;}
+	virtual QGroupBox* controlPanel		();			    // create control panel
+	virtual bool	   applyFilter		(ImagePtr, bool, ImagePtr); // filter input image -> make output
+	virtual void	   reset		();			    // reset parameters
+	virtual void	   initShader		();
+	virtual void	   gpuProgram		(int pass);		    // use GPU program to apply filter
+	bool		   gpuImplemented	() { return m_shaderFlag;}
+	int		   gpuPasses		() { return m_nPasses;}
+	virtual void	   setImageSize		(int, int) {}
 
 protected:
 	bool			m_shaderFlag;				// true if the shaders are initialized

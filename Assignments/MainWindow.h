@@ -1,10 +1,10 @@
 // ======================================================================
 // Computer Graphics Homework Solutions
-// Copyright (C) 2017 by George Wolberg
+// Copyright (C) 2018 by George Wolberg
 //
 // MainWindow.h - Header file for MainWindow class
 //
-// Written by: George Wolberg, 2017
+// Written by: George Wolberg, 2018
 // ======================================================================
 
 #ifndef MAINWINDOW_H
@@ -35,7 +35,7 @@
 #define MAXFILTERS	50
 enum {
 	DUMMY, THRESHOLD, CLIP, QUANTIZE, GAMMA, CONTRAST, HISTOSTRETCH, HISTOMATCH,
-	ERRDIFFUSION, BLUR, SHARPEN, MEDIAN, CONVOLVE, SPECTRUM, SWAP, FILTER
+	ERRDIFFUSION, BLUR, SHARPEN, MEDIAN, CONVOLVE, SPECTRUM, SWAPPHASE, FILTER, RESIZE
 };
 using namespace IP;
 
@@ -97,6 +97,7 @@ private:
 	QMenu*			m_menuPtOps;
 	QMenu*			m_menuNbrOps;
 	QMenu*			m_menuFFT;
+	QMenu*			m_menuGeoOps;
 
 	// point ops actions
 	QAction*		m_actionOpen;
@@ -120,8 +121,11 @@ private:
 
 	// FFT ops actions
 	QAction*		m_actionSpectrum;
-	QAction*		m_actionSwap;
+	QAction*		m_actionSwapPhase;
 	QAction*		m_actionFilter;
+
+	// geometric ops actions
+	QAction*		m_actionResize;
 
 	// homework objects
 	ImageFilter*		m_imageFilter[MAXFILTERS];

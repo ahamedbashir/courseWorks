@@ -53,12 +53,11 @@ namespace IP {
 // miscellaneous definitions
 //
 #define LSB		0x0001
-#define MXBLUR		256
 #define MXCH		8192
 #define MXCHANNEL	16
 #define MXGRAY		256
 #define MXHALFTONE	10
-#define MXRES		4096
+#define MXRES		8192
 #define MXSTRLEN	1024
 #define MXWINDOWS	16
 

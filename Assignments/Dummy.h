@@ -1,10 +1,10 @@
 // ======================================================================
 // IMPROC: Image Processing Software Package
-// Copyright (C) 2017 by George Wolberg
+// Copyright (C) 2018 by George Wolberg
 //
 // Dummy.h - Header for dummy control panel
 //
-// Written by: George Wolberg, 2017
+// Written by: George Wolberg, 2018
 // ======================================================================
 
 #ifndef DUMMY_H

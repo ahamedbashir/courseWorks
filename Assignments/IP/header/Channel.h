@@ -89,7 +89,7 @@ Channel::Channel(int size)
 inline
 Channel::~Channel()
 {
-	if (m_buf) delete [] (uchar *) m_buf;
+	if (m_buf) delete [] (uchar*) m_buf;
 }
 
 
@@ -136,6 +136,7 @@ Channel::buf()
 inline void
 Channel::resize(int size)
 {
+	if(m_buf) delete [] (uchar*) m_buf;
 	m_buf = new uchar[size];
 }
 

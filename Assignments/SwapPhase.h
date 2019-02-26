@@ -1,25 +1,25 @@
 // ======================================================================
 // IMPROC: Image Processing Software Package
-// Copyright (C) 2017 by George Wolberg
+// Copyright (C) 2018 by George Wolberg
 //
-// Swap.h - Swap widget
+// SwapPhase.h - Swap phase spectrum widget
 //
-// Written by: George Wolberg, 2017
+// Written by: George Wolberg, 2018
 // ======================================================================
 
-#ifndef SWAP_H
-#define SWAP_H
+#ifndef SWAPPHASE_H
+#define SWAPPHASE_H
 
 #include "ImageFilter.h"
 
-class Swap : public ImageFilter {
+class SwapPhase : public ImageFilter {
 	Q_OBJECT
 
 public:
-	Swap			(QWidget *parent = 0);	// constructor
-	QGroupBox*	controlPanel	();			// create control panel
+	SwapPhase			(QWidget *parent = 0);		// constructor
+	QGroupBox*	controlPanel	();				// create control panel
 	bool		applyFilter	(ImagePtr, bool, ImagePtr);	// apply filter to input
-	void		swap	(ImagePtr, ImagePtr, ImagePtr, ImagePtr);
+	void		swapPhase	(ImagePtr, ImagePtr, ImagePtr, ImagePtr);
 	void		initShader();
 	void		gpuProgram(int pass);	// use GPU program to apply filter
 
@@ -40,4 +40,4 @@ private:
 	int		m_height;	// input image height
 };
 
-#endif	// SWAP_H
+#endif	// SWAPPHASE_H

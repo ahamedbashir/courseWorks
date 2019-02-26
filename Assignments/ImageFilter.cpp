@@ -1,10 +1,10 @@
 // ===============================================================
 // Computer Graphics Homework Solutions
-// Copyright (C) 2017 by George Wolberg
+// Copyright (C) 2018 by George Wolberg
 //
 // ImageFilter.cpp - ImageFilter class. Base class of homework solutions.
 //
-// Written by: George Wolberg, 2017
+// Written by: George Wolberg, 2018
 // ===============================================================
 
 #include "ImageFilter.h"

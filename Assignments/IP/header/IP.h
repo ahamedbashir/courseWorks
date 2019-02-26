@@ -78,9 +78,7 @@ extern uchar	 BITMASK[];
 
 extern int	AbsVal;
 extern int	BorderVal;
-extern double	CubicConvA;
 extern int	HistoFit;
-extern int	ImagePadLen;
 extern int	ImagePadMtd;
 extern double	PlotScl;
 extern int	SavePixmap;
@@ -124,7 +122,7 @@ extern void	IP_notImage	(ImagePtr, ImagePtr);
 
 //		IPblur.cpp	- blurring functions
 #include "IPblur.tpp"
-extern void	IP_blur		(ImagePtr, double, double, ImagePtr);
+extern void	IP_blur		(ImagePtr, int, int, ImagePtr);
 
 //		IPcanny.cpp	- Canny edge operator
 extern void	IP_canny	(ImagePtr, double, int, int, ImagePtr);
@@ -168,10 +166,11 @@ extern void	IP_complexConjugate(ImagePtr, ImagePtr);
 
 //		IPfiltnbr.cpp	- Neighborhood Ops
 extern void	IP_blurGaussian	(ImagePtr, double, ImagePtr);
-extern void	IP_blurEdgePreserve(ImagePtr, double, double, double, ImagePtr);
+extern void	IP_blurEdgePreserve(ImagePtr, int, int, double, ImagePtr);
 extern void	IP_blurMask	(ImagePtr, ImagePtr, ImagePtr, double, ImagePtr);
-extern void	IP_blurMatte	(ImagePtr, double, double, ImagePtr);
-extern void	IP_sharpen	(ImagePtr, double, double, double, ImagePtr);
+extern void	IP_blurMatte	(ImagePtr, int, int, ImagePtr);
+extern void	IP_sharpen	(ImagePtr, int, int, double, ImagePtr);
+extern void	IP_edgeDOB	(ImagePtr, int, int, double, ImagePtr);
 extern void	IP_median	(ImagePtr, int, int, ImagePtr);
 extern void	IP_median2	(ImagePtr, int, ImagePtr);
 extern void	IP_gradient	(ImagePtr, ImagePtr, ImagePtr);
@@ -191,10 +190,10 @@ extern void	IP_contrast	(ImagePtr, double, double, double, ImagePtr);
 extern void	IP_medianOfChannels(ImagePtr, ImagePtr);
 
 //		IPgeo.cpp	- Geometric Ops
-extern void	IP_resize	(ImagePtr, int, int, int, ImagePtr);
-extern void	IP_resize1D	(ChannelPtr<uchar>, int, int, int, int,
+extern void	IP_resize	(ImagePtr, int, int, int, double, ImagePtr);
+extern void	IP_resize1D	(ChannelPtr<uchar>, int, int, int, int, double,
 				 ChannelPtr<uchar>);
-extern void	IP_fresize1D	(ChannelPtr<float>, int, int, int, int,
+extern void	IP_fresize1D	(ChannelPtr<float>, int, int, int, int, double,
 				 ChannelPtr<float>);
 extern void	IP_rotate	(ImagePtr, double, ImagePtr);
 extern void	IP_translate	(ImagePtr, double, double, ImagePtr);
@@ -206,9 +205,9 @@ extern void	IP_fskew1D	(ChannelPtr<float>, int, int, double, int,
 				 ChannelPtr<float>);
 
 //		IPhisto.cpp	- histogram evaluation, manipulation, display
-extern void	IP_histogram	    (ImagePtr, int, int*, int, double&,double&);
-extern void	IP_histogramEqualize(ImagePtr, ImagePtr);
-extern void	IP_histogramMatch   (ImagePtr, ImagePtr, ImagePtr);
+extern void	IP_histogram	(ImagePtr, int, int*, int, double&,double&);
+extern void	IP_histoEqualize(ImagePtr, ImagePtr);
+extern void	IP_histoMatch   (ImagePtr, ImagePtr, bool, ImagePtr);
 
 //		IPhough.cpp	- Hough transform
 extern void	IP_houghLines	(ImagePtr, int, ImagePtr, ImagePtr);
@@ -270,6 +269,7 @@ extern void	IP_castChannels	  (ImagePtr, int*,ImagePtr);
 extern void	IP_castChannelsEq (ImagePtr, int, ImagePtr);
 extern void	IP_castChannelsMin(ImagePtr, int, ImagePtr);
 extern void	IP_castChannelsMax(ImagePtr, int, ImagePtr);
+extern void	IP_castChannelsImg(ImagePtr, ImagePtr, ImagePtr);
 extern void	IP_clearChannel	  (ImagePtr, int, ImagePtr);
 extern int	IP_checkDimensions(ImagePtr, ImagePtr);
 

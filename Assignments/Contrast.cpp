@@ -1,10 +1,10 @@
 // ======================================================================
 // IMPROC: Image Processing Software Package
-// Copyright (C) 2017 by George Wolberg
+// Copyright (C) 2018 by George Wolberg
 //
 // Contrast.cpp - Brightness/Contrast widget.
 //
-// Written by: George Wolberg, 2017
+// Written by: George Wolberg, 2018
 // ======================================================================
 
 #include "MainWindow.h"
@@ -218,8 +218,30 @@ Contrast::reset()
 void
 Contrast::initShader() 
 {
+	// number of passes in filter cascade
+	m_nPasses = 1;
+
+	// initialize GL function resolution for current context
+	initializeGLFunctions();
+
+	// init uniform hash table based on uniform variable names and location IDs
+	UniformMap uniforms;
+	uniforms["u_Brightness"] = BRIGHTNESS;
+	uniforms["u_Contrast"  ] = U_CONTRAST;
+	uniforms["u_Sampler"   ] = SAMPLER;
+
+        QString v_name = ":/vshader_passthrough";
+        QString f_name = ":/hw1/fshader_contrast";
+        
+	// compile shader, bind attribute vars, link shader, and initialize uniform var table
+	g_mainWindowP->glw()->initShader(m_program[PASS1], 
+	                                 v_name + ".glsl", 
+	                                 f_name + ".glsl",
+					 uniforms,
+					 m_uniform[PASS1]);
+
 	// flag to indicate shader availability
-	m_shaderFlag = false;
+	m_shaderFlag = true;
 }
 
 
