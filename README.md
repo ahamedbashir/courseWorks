@@ -36,7 +36,7 @@
 ## ***Sharpening***
 ![](https://github.com/ahamedbashir/imageProcessing/blob/master/media/neighOps/3.gif)
 
-## ****Median Filtering***
+## ***Median Filtering***
 ![](https://github.com/ahamedbashir/imageProcessing/blob/master/media/neighOps/4.gif)
 
 ## ***Convolution***
