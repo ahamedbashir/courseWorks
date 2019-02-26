@@ -1,4 +1,4 @@
-# Image Processing
+
 
 # Point Operations
 
