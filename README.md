@@ -2,10 +2,10 @@
 
 # Point Operations
 
-## *# Quantization
+***Quantization***
 ![](https://github.com/ahamedbashir/imageProcessing/blob/master/media/pointOps/1.gif)
 
-## *# Clipping
+#* Clipping *
 ![](https://github.com/ahamedbashir/imageProcessing/blob/master/media/pointOps/2.gif)
 
 ## *# Gamma Correction
