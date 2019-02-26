@@ -1,0 +1,45 @@
+@media screen and (max-width: 600px) {
+    .projectFeatures {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-content: start;
+    }
+
+    .Ops{
+        display: grid;
+        grid-template-columns: minmax(300px, 1fr);
+        grid-gap: 1em, 3em;
+    }
+}
+.projectFeatures {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(194px, 300px));
+    grid-gap: 1em, 3em;
+    justify-content: start;
+}
+.Ops{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1em, 3em;
+}
+
+.box {
+    border: 1px solid rgb(21, 66, 126);
+}
+
+h1{
+    text-align: center;
+    color: blue;
+}
+
+h3 {
+    text-align: center;
+}
+
+div img {
+    max-width: 100%;
+}
+
+.head {
+    font-size: 50px;
+}
