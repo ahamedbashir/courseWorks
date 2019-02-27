@@ -21,6 +21,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 3em 1em;
+    justify-items: center;
 }
 
 .box {
