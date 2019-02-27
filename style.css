@@ -13,18 +13,18 @@
 }
 .projectFeatures {
     display: grid;
-    grid-template-columns: repeat(4, minmax(194px, 300px));
+    grid-template-columns: repeat(2, minmax(194px, 300px));
     grid-gap: 1em, 3em;
-    justify-content: start;
+    justify-content: center;
 }
 .Ops{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 1em, 3em;
+    grid-gap: 3em 1em;
 }
 
 .box {
-    border: 1px solid rgb(21, 66, 126);
+    border: 2px solid rgb(21, 66, 126);
 }
 
 h1{
@@ -32,7 +32,7 @@ h1{
     color: blue;
 }
 
-h3 {
+h2 {
     text-align: center;
 }
 
