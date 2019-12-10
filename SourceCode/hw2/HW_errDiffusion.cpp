@@ -25,12 +25,6 @@
 //
 
 
-//  Written by :  BASHIR AHAMED
-//                SHOFIQUR RAHMAN
-//                UCHA SAMADASHVILI
-//
-//  Semester   :  FALL 2018
-
 
 // function for gamma correction
 void gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2);

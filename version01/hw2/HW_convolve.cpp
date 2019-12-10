@@ -5,11 +5,6 @@
 // Output is in I2.
 //
 
-//  Written by :  BASHIR AHAMED
-//                SHOFIQUR RAHMAN
-//                UCHA SAMADASHVILI
-//
-//  Semester   :  FALL 2018
 
 // function to copy row pixels into a buffer
 extern void bufferedRowCopy(ChannelPtr<uchar> P, short* buf, int kernelSize, int width);

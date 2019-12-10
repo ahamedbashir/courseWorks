@@ -4,10 +4,6 @@
 // Convolve I1 with filter kernel in Ikernel.
 // Output is in I2.
 //
-
-//  Written by :  BASHIR AHAMED
-//                SHOFIQUR RAHMAN
-//                UCHA SAMADASHVILI
 //
 //  Semester   :  FALL 2018
 

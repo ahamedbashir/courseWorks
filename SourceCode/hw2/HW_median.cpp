@@ -8,12 +8,6 @@ using std::vector;
 // Apply median filter of size sz x sz to I1.
 // Clamp sz to 9.
 // Output is in I2.
-//
-
-//  Written by :  BASHIR AHAMED
-//                SHOFIQUR RAHMAN
-//                UCHA SAMADASHVILI
-//
 //  Semester   :  FALL 2018
 
 // need a function to get the median of  of the neighbor

@@ -3,11 +3,6 @@
 //
 // Gamma correct image I1. Output is in I2.
 //
-// 	Written by :	BASHIR AHAMED
-//			SHOFIQUR RAHMAN
-//			UCHA SAMADASHVILI
-//
-//	Semester   :	FALL 2018
 //
 void
 HW_gammaCorrect(ImagePtr I1, double gamma, ImagePtr I2)

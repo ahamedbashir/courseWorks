@@ -1,9 +1,4 @@
-// ************************************************************
-//      Written by :    BASHIR AHAMED
-//
-//		https://github.com/ahamedbashir/imageProcessing
-//
-//      Semester   :    FALL 2018
+
 // ************************************************************
 
 // complex struct data type for fft1D

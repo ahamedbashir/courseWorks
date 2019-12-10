@@ -7,13 +7,6 @@ void histoMatchExactExtra(ImagePtr, ImagePtr, ImagePtr);
 //
 // Apply histogram matching to I1. Output is in I2.
 //
-//      Written by :    BASHIR AHAMED
-//                      SHOFIQUR RAHMAN
-//                      UCHA SAMADASHVILI
-//
-//      Semester   :    FALL 2018
-//
-//
 //
 //
 

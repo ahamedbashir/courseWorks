@@ -3,11 +3,6 @@
 //
 // Apply histogram stretching to I1. Output is in I2.
 // Stretch intensity values between t1 and t2 to fill the range [0,255].
-//      Written by :    BASHIR AHAMED
-//                      SHOFIQUR RAHMAN
-//                      UCHA SAMADASHVILI
-//
-//      Semester   :    FALL 2018
 //
 //
 

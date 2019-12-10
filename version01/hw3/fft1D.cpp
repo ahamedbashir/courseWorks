@@ -1,11 +1,4 @@
 // refererence code: fft1d.c by Professor George Wolberg, CCNY
-
-// ************************************************************
-//      Written by :    BASHIR AHAMED
-//
-//      https://github.com/ahamedbashir/imageProcessing
-//
-//      Semester   :    FALL 2018
 // ************************************************************
 
 //  ***********************

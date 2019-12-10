@@ -6,11 +6,6 @@
 // If t1<input<t2: output = input;
 // If      val>t2: output = t2;
 //
-//	Written by :	BASHIR AHAMED
-//			SHOFIQUR RAHMAN
-//			UCHA SAMADASHVILI
-//
-//	Semester   :	FALL 2018
 //
 void
 HW_clip(ImagePtr I1, int t1, int t2, ImagePtr I2)

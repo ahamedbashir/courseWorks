@@ -1,11 +1,5 @@
 
 // ************************************************************
-//      Written by :    BASHIR AHAMED
-//
-//		https://github.com/ahamedbashir/imageProcessing
-//
-//      Semester   :    FALL 2018
-// ************************************************************
 
 
 //extern void HW_fft2MagPhase(ImagePtr Ifft, ImagePtr Imag, ImagePtr Iphase);

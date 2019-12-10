@@ -6,9 +6,6 @@
 // If t1<input<t2: output = input;
 // If      val>t2: output = t2;
 //
-//	Written by :	BASHIR AHAMED
-//			SHOFIQUR RAHMAN
-//			UCHA SAMADASHVILI
 //
 //	Semester   :	FALL 2018
 //

@@ -4,12 +4,6 @@
 // Sharpen image I1. Output is in I2.
 //
 
-//  Written by :  BASHIR AHAMED
-//                SHOFIQUR RAHMAN
-//                UCHA SAMADASHVILI
-//
-//  Semester   :  FALL 2018
-
 // how to call HW_blur ????
 // fixed it... using extern
 extern void row_Blur(ChannelPtr<uchar> p1, ChannelPtr<uchar> p2, int length, int width, int jump);

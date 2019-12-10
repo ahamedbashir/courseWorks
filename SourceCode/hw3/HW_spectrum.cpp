@@ -1,9 +1,5 @@
 
 // ************************************************************
-//      Written by :    BASHIR AHAMED
-//
-//		https://github.com/ahamedbashir/imageProcessing
-//
 //      Semester   :    FALL 2018
 // ************************************************************
 

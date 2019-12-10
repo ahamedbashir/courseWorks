@@ -7,12 +7,6 @@
 // adding "brightness" value.
 //
 //
-//      Written by :    BASHIR AHAMED
-//                      SHOFIQUR RAHMAN
-//                      UCHA SAMADASHVILI
-//
-//      Semester   :    FALL 2018
-//
 
 void
 HW_contrast(ImagePtr I1, double brightness, double contrast, ImagePtr I2)
